@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'widgets/bwg_widgets.dart';
 
 void main() {
   runApp(const BWGApp());
@@ -121,70 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
         child: ListView(
           children: const <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text("Quentin L"),
-                          Spacer(),
-                          Text("vs."),
-                          Spacer(),
-                        Text("Kris R")
-                      ]
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text("Warhammer 40,000"),
-                        Spacer()
-                      ]
-                    )
-                  )
-                ]
-              )
-            ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text("Marcus W"),
-                          Spacer(),
-                          Text("vs."),
-                          Spacer(),
-                          Text("Alex LH")
-                      ]
-                    ),
-                    ),
-                  Padding(padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text("Warhammer 40,000"),
-                        Spacer()
-                      ]
-                    )
-                  )
-                ]
-              )
-            ),
-            ),
+            BookingTile("Doug", "Kris", "30k"),
+            BookingTile("Rob", "Chris", "30k")
           ],
         ),
       ),
