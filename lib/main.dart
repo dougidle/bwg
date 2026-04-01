@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
+        /*child: Column(
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -108,6 +108,82 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),*/
+        /*child: ListView(
+          children: const <Widget>[
+            ListTile(leading: Icon(Icons.map), title: Text('Map')),
+            ListTile(leading: Icon(Icons.photo_album), title: Text('Album')),
+            ListTile(leading: Icon(Icons.phone), title: Text('Phone')),
+          ],
+        ),*/
+
+        child: ListView(
+          children: const <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text("Quentin L"),
+                          Spacer(),
+                          Text("vs."),
+                          Spacer(),
+                        Text("Kris R")
+                      ]
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text("Warhammer 40,000"),
+                        Spacer()
+                      ]
+                    )
+                  )
+                ]
+              )
+            ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text("Marcus W"),
+                          Spacer(),
+                          Text("vs."),
+                          Spacer(),
+                          Text("Alex LH")
+                      ]
+                    ),
+                    ),
+                  Padding(padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text("Warhammer 40,000"),
+                        Spacer()
+                      ]
+                    )
+                  )
+                ]
+              )
+            ),
             ),
           ],
         ),
