@@ -31,13 +31,13 @@ class BWGApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.green),
       ),
-      home: const MyHomePage(title: 'Barming Wargames Community'),
+      home: const BWGHomePage(title: 'Barming Wargames Community'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class BWGHomePage extends StatefulWidget {
+  const BWGHomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -51,25 +51,60 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<BWGHomePage> createState() => _BWGHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+enum LoadStates { done, loading, error}
 
-  void _incrementCounter() {
+class _BWGHomePageState extends State<BWGHomePage> {
+  LoadStates _loadState = LoadStates.done;
+  DateTime theDate =  DateTime.now();
+
+  void _setDoneState() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+    _loadState = LoadStates.done;
     });
+  }
+
+  void _setLoadingState() {
+    setState(() {
+    _loadState = LoadStates.loading;
+    });
+  }
+
+  void _setErrorState() {
+    setState(() {
+    _loadState = LoadStates.error;
+    });
+  }
+
+  void _loadBookings() async {
+    if (_loadState != LoadStates.loading) {
+      _setLoadingState();
+      await getBookingsFromRemoteDb();
+      _setDoneState();
+    } else {
+      print("Can't do it - I'm already doing it!");
+    }
+  }
+
+  Future<void> getBookingsFromRemoteDb() async {
+    for (int i = 0; i < 5; i++) {
+      await Future.delayed(Duration(seconds: 1));
+      print("Index: $i");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    Widget theIcon;
+    if (_loadState == LoadStates.loading) {
+      theIcon = Icon(Icons.warning_rounded);
+    } else {
+      theIcon = Icon(Icons.refresh);
+    }
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -82,55 +117,34 @@ class _MyHomePageState extends State<MyHomePage> {
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
+        // Here we take the value from the BWGHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        /*child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),*/
-        /*child: ListView(
-          children: const <Widget>[
-            ListTile(leading: Icon(Icons.map), title: Text('Map')),
-            ListTile(leading: Icon(Icons.photo_album), title: Text('Album')),
-            ListTile(leading: Icon(Icons.phone), title: Text('Phone')),
-          ],
-        ),*/
-
-        child: ListView(
-          children: const <Widget>[
-            BookingTile("Doug", "Kris", "30k"),
-            BookingTile("Rob", "Chris", "30k")
-          ],
+        leading: IconButton(
+          onPressed: _loadBookings, 
+          icon: theIcon
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: Center(
+        child: ListView(
+          children: <Widget>[
+            DayBookingTile(
+              "2 April 2026",
+              [
+                Booking("Doug I", "Kris R", "Warhammer 40,000"),
+                Booking("Matt B", "Simon L", "Warhammer 40,000"),
+                Booking("Cam B", "Tommy F", "Warhammer 40,000")
+              ]
+            ),
+            DayBookingTile(
+              "9 April 2026",
+              [
+                Booking("Matt B", "James D", "Warhammer 40,000"),
+                Booking("Doug I", "Cam B", "Horus Heresy")
+              ]
+              ),
+          ],
+        ),
       ),
     );
   }

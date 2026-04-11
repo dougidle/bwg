@@ -9,37 +9,31 @@ class BookingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(player1),
-                  Spacer(),
-                  Text("vs."),
-                  Spacer(),
-                  Text(player2)
-                ]
-              ) ,
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(gameSystem),
-                  Spacer()
-                ]
-              )
+    return Card(
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                Text(player1),
+                Spacer(),
+                Text("vs."),
+                Spacer(),
+                Text(player2)
+              ]
+            ) ,
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                Text(gameSystem),
+                Spacer()
+              ]
             )
-          ]
-        )
+          )
+        ]
       )
     );
   }
