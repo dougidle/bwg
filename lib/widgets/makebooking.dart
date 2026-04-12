@@ -64,7 +64,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
           Text(
             'Book a game',
             style: TextStyle(
-              color: bwg_darkpurple,
+              color: bwgDarkpurple,
               fontWeight: FontWeight.bold,
               fontSize: 16.0
             )
@@ -84,7 +84,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
           Text(
             'Player 1:',
             style: TextStyle(
-              color: bwg_darkpurple,
+              color: bwgDarkpurple,
               fontWeight: FontWeight.bold
             )
           ),
@@ -97,11 +97,11 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   fillColor: Colors.white,
                   hintText: "Your name",
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                     borderRadius: BorderRadius.circular(12),                  
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                     borderRadius: BorderRadius.circular(12),                       
                   ),
                 ),
@@ -120,7 +120,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
           Text(
             'Player 2:',
             style: TextStyle(
-              color: bwg_darkpurple,
+              color: bwgDarkpurple,
               fontWeight: FontWeight.bold
             )
           ),
@@ -133,11 +133,11 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   fillColor: Colors.white,
                   hintText: "Your opponent",
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                     borderRadius: BorderRadius.circular(12),                  
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                     borderRadius: BorderRadius.circular(12),                       
                   ),
                 ),
@@ -161,7 +161,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   _reserveGame();
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: bwg_darkpurple
+                  backgroundColor: bwgDarkpurple
                 ),
                 child: Text(
                   "Book my game",
@@ -185,7 +185,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Card(
-        color: bwg_lilac,
+        color: bwgLilac,
         child: Column(
           children: <Widget>[
             Padding(

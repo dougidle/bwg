@@ -58,7 +58,7 @@ class _DayBookingState extends State<DayBookingTile> {
           Text(
             '${widget.theDate} - ${bookingsList.length} bookings',
             style: TextStyle(
-              color: bwg_darkpurple,
+              color: bwgDarkpurple,
               fontWeight: FontWeight.bold,
               fontSize: 16.0
             )
@@ -78,7 +78,7 @@ class _DayBookingState extends State<DayBookingTile> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Card(
-        color: bwg_lilac,
+        color: bwgLilac,
         child: Column(
           children: <Widget>[
             Padding(
