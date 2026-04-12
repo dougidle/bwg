@@ -3,9 +3,5 @@ class Booking {
   late String player2;
   late String gameSystem;
 
-  Booking(String player1, String player2, String gameSystem) {
-    this.player1 = player1;
-    this.player2 = player2;
-    this.gameSystem = gameSystem;
-  }
+  Booking(this.player1, this.player2, this.gameSystem);
 }
