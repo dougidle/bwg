@@ -33,7 +33,7 @@ class BWGApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.green),
       ),
-      home: const BWGHomePage(title: 'Barming Wargames Community'),
+      home: const BWGHomePage(title: 'Barming Wargamers'),
     );
   }
 }
@@ -125,8 +125,14 @@ class _BWGHomePageState extends State<BWGHomePage> {
         title: Text(widget.title),
         leading: IconButton(
           onPressed: _loadBookings, 
-          icon: theIcon
+          icon: Icon(Icons.info)
         ),
+        actions: [
+          IconButton(
+            onPressed: _loadBookings, 
+            icon: theIcon
+          )
+        ],
       ),
       backgroundColor: Colors.black,
       body: Center(
