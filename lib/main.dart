@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/bwg_widgets.dart';
+import 'widgets/booking.dart';
 
 void main() {
   runApp(const BWGApp());
@@ -128,6 +129,13 @@ class _BWGHomePageState extends State<BWGHomePage> {
       body: Center(
         child: ListView(
           children: <Widget>[
+            MakeBookingTile(
+              /*onSubmitGuess: (String guess) {
+              setState(() { // NEW
+                _game.guess(guess);
+              });
+              },*/
+            ),
             DayBookingTile(
               "2 April 2026",
               [
