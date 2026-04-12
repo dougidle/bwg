@@ -57,7 +57,11 @@ class _DayBookingState extends State<DayBookingTile> {
         children: <Widget>[
           Text(
             '${widget.theDate} - ${bookingsList.length} bookings',
-            style: Theme.of(context).textTheme.titleMedium
+            style: TextStyle(
+              color: bwg_darkpurple,
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0
+            )
           ),
           Spacer(),
           IconButton(

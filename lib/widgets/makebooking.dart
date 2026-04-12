@@ -63,7 +63,11 @@ class _MakeBookingState extends State<MakeBookingTile> {
         children: <Widget>[
           Text(
             'Book a game',
-            style: Theme.of(context).textTheme.titleMedium
+            style: TextStyle(
+              color: bwg_darkpurple,
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0
+            )
           ),
           Spacer(),
           IconButton(
@@ -77,19 +81,28 @@ class _MakeBookingState extends State<MakeBookingTile> {
     theContentList.add(
       Row(
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Your Name"),
-            ),
+          Text(
+            'Player 1:',
+            style: TextStyle(
+              color: bwg_darkpurple,
+              fontWeight: FontWeight.bold
+            )
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(35)),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: "Your name",
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderRadius: BorderRadius.circular(12),                  
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderRadius: BorderRadius.circular(12),                       
                   ),
                 ),
                 controller: _player1Controller, 
@@ -104,19 +117,28 @@ class _MakeBookingState extends State<MakeBookingTile> {
     theContentList.add(
       Row(
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Opponent"),
-            ),
+          Text(
+            'Player 2:',
+            style: TextStyle(
+              color: bwg_darkpurple,
+              fontWeight: FontWeight.bold
+            )
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(35)),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: "Your opponent",
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderRadius: BorderRadius.circular(12),                  
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: bwg_darkpurple, width: 1),
+                    borderRadius: BorderRadius.circular(12),                       
                   ),
                 ),
                 controller: _player2Controller, 
