@@ -1,3 +1,4 @@
+import 'package:bwg/resources/bwg_colors.dart';
 import 'package:flutter/material.dart';
 import 'widgets/bwg_widgets.dart';
 import 'widgets/booking.dart';
@@ -117,7 +118,8 @@ class _BWGHomePageState extends State<BWGHomePage> {
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        foregroundColor: bwg_lilac,
+        backgroundColor: Colors.black,
         // Here we take the value from the BWGHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
@@ -126,6 +128,7 @@ class _BWGHomePageState extends State<BWGHomePage> {
           icon: theIcon
         ),
       ),
+      backgroundColor: Colors.black,
       body: Center(
         child: ListView(
           children: <Widget>[

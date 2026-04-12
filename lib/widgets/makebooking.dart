@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'booking.dart';
+import '../resources/bwg_colors.dart';
 
 class MakeBookingTile extends StatefulWidget {
   const MakeBookingTile({super.key});
@@ -60,7 +61,10 @@ class _MakeBookingState extends State<MakeBookingTile> {
     theWidgetList.add(
       Row(
         children: <Widget>[
-          Text('Book a game'),
+          Text(
+            'Book a game',
+            style: Theme.of(context).textTheme.titleMedium
+          ),
           Spacer(),
           IconButton(
             onPressed: _doExpand, 
@@ -76,7 +80,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Player 1"),
+              child: Text("Your Name"),
             ),
           ),
           Expanded(
@@ -103,7 +107,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Player 2"),
+              child: Text("Opponent"),
             ),
           ),
           Expanded(
@@ -134,7 +138,17 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 onPressed: (){
                   _reserveGame();
                 },
-                child: Text("Book my game")
+                style: TextButton.styleFrom(
+                  backgroundColor: bwg_darkpurple
+                ),
+                child: Text(
+                  "Book my game",
+                   style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                   )
+                   //Theme.of(context).textTheme.titleMedium
+                )
               ),
             ),
           ),
@@ -149,6 +163,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Card(
+        color: bwg_lilac,
         child: Column(
           children: <Widget>[
             Padding(
@@ -159,7 +174,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
               ) ,
             ),
           ]
-        )
+        ),
       )
     );
   }

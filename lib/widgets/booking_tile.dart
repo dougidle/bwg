@@ -9,7 +9,7 @@ class BookingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Card.filled(
       child: Column(
         children: <Widget>[
           Padding(

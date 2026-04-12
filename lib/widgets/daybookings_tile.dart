@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'bwg_widgets.dart';
 import 'booking.dart';
+import '../resources/bwg_colors.dart';
 
 class DayBookingTile extends StatefulWidget {
   const DayBookingTile(this.theDate, this.theBookings, {super.key});
@@ -53,13 +54,17 @@ class _DayBookingState extends State<DayBookingTile> {
 
     theWidgetList.add(
       Row(
-              children: <Widget>[
-                Text('${widget.theDate} - ${bookingsList.length} bookings'),
-                Spacer(),
-                IconButton(
-                  onPressed: _doExpand, 
-                  icon: theIcon),
-              ]
+        children: <Widget>[
+          Text(
+            '${widget.theDate} - ${bookingsList.length} bookings',
+            style: Theme.of(context).textTheme.titleMedium
+          ),
+          Spacer(),
+          IconButton(
+            onPressed: _doExpand, 
+            icon: theIcon
+          ),
+        ]
       )
     );
     if (_isExpanded) {
@@ -69,6 +74,7 @@ class _DayBookingState extends State<DayBookingTile> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Card(
+        color: bwg_lilac,
         child: Column(
           children: <Widget>[
             Padding(
