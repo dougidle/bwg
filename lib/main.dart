@@ -145,7 +145,7 @@ class _BWGHomePageState extends State<BWGHomePage> {
               });
               },*/
             ),
-            DayBookingTile(
+            /*DayBookingTile(
               "2 April 2026",
               [
                 Booking("Doug I", "Kris R", "Warhammer 40,000"),
@@ -159,7 +159,7 @@ class _BWGHomePageState extends State<BWGHomePage> {
                 Booking("Matt B", "James D", "Warhammer 40,000"),
                 Booking("Doug I", "Cam B", "Horus Heresy")
               ]
-              ),
+              ),*/
           ],
         ),
       ),

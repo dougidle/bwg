@@ -13,14 +13,24 @@ class _MakeBookingState extends State<MakeBookingTile> {
   //final void Function(String) onSubmitGuess;
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
-  Booking theBooking = Booking("", "", "");
+  Booking theBooking = Booking("", "", "", DateTime.now());
   bool _isExpanded = true;
+
+  List<String> availableGameSystems = [
+    "No game chosen",
+    "Warhammer 40,000",
+    "Warhammer: The Old World",
+    "Kill Team",
+    "Blood Bowl"
+  ];
 
   void _reserveGame() {
     theBooking.player1 = _player1Controller.text;
     theBooking.player2 = _player2Controller.text;
     print("Player 1: ${theBooking.player1}");
     print("Player 2: ${theBooking.player2}");
+    print("Game: ${theBooking.gameSystem}");
+    print("Date: ${theBooking.gameDay.toString()}");
     _player1Controller.clear();
     _player2Controller.clear();
   }
@@ -45,6 +55,35 @@ class _MakeBookingState extends State<MakeBookingTile> {
     }
   }
 
+  DateTime withTime(DateTime date, int hour, int minute) {
+    return DateTime(date.year, date.month, date.day, hour, minute);
+  }
+
+  String dateToString(DateTime theDate) {
+    return "${theDate.year}-"
+       "${theDate.month.toString().padLeft(2, '0')}-"
+       "${theDate.day.toString().padLeft(2, '0')}  "
+       "${theDate.hour.toString().padLeft(2, '0')}:"
+       "${theDate.minute.toString().padLeft(2, '0')}";
+  }
+
+  List<DateTime> getNextGameDays() {
+    List<DateTime> theAvailableGameDays = [];
+    DateTime currentDate = DateTime.now();
+    currentDate = withTime(currentDate, 19, 00);
+    int todayDay = currentDate.weekday;
+
+    if (todayDay != 4) {
+        var days = (7 - todayDay + 4) % 7;
+        currentDate = currentDate.add(Duration(days: days));
+    }
+
+    theAvailableGameDays.add(currentDate);
+    theAvailableGameDays.add(currentDate.add(Duration(days: 7)));
+
+    return theAvailableGameDays;
+}
+
   @override
   Widget build(BuildContext context) {
     Icon theIcon;
@@ -56,6 +95,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
 
     List<Widget> theContentList = [];
     List<Widget> theWidgetList = [];
+    final List<DateTime> gameDays = getNextGameDays();
 
     // Widget title
     theWidgetList.add(
@@ -81,14 +121,18 @@ class _MakeBookingState extends State<MakeBookingTile> {
     theContentList.add(
       Row(
         children: [
-          Text(
-            'Player 1:',
-            style: TextStyle(
-              color: bwgDarkpurple,
-              fontWeight: FontWeight.bold
-            )
-          ),
           Expanded(
+        flex: 2, 
+        child: Text(
+          'Player 1:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: bwgDarkpurple,
+          ),
+        ),
+      ),
+          Expanded(
+            flex: 8, 
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
@@ -113,41 +157,151 @@ class _MakeBookingState extends State<MakeBookingTile> {
       )
     );
 
-    // Player 2
-    theContentList.add(
-      Row(
-        children: [
-          Text(
-            'Player 2:',
-            style: TextStyle(
-              color: bwgDarkpurple,
-              fontWeight: FontWeight.bold
-            )
+// Player 2
+theContentList.add(
+  Row(
+    children: [
+      Expanded(
+        flex: 2, 
+        child: Text(
+          'Player 2:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: bwgDarkpurple,
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: "Your opponent",
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
-                    borderRadius: BorderRadius.circular(12),                  
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
-                    borderRadius: BorderRadius.circular(12),                       
-                  ),
-                ),
-                controller: _player2Controller, 
+        ),
+      ),
+      Expanded(
+        flex: 8, 
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: "Your opponent",
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                borderRadius: BorderRadius.circular(12),                  
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                borderRadius: BorderRadius.circular(12),                       
               ),
             ),
+            controller: _player2Controller, 
           ),
-        ],
-      )
-    );
+        ),
+      ),
+    ],
+  )
+);
+
+// Gamesystem dropdown
+theContentList.add(
+  Row(
+    children: [
+      Expanded(
+        flex: 2, 
+        child: Text(
+          'Game:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: bwgDarkpurple,
+          ),
+        ),
+      ),
+      Expanded(
+        flex: 8, 
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: DropdownMenu<String>(
+            initialSelection: availableGameSystems.first,
+            expandedInsets: EdgeInsets.zero,
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 14,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            dropdownMenuEntries: [
+              for (var gameDay in availableGameSystems)
+                DropdownMenuEntry<String>(
+                  value: gameDay,
+                  label: gameDay,
+                ),
+            ],
+            onSelected: (value) {
+              theBooking.gameSystem = value.toString();
+            },
+          ),
+        ),
+      ),
+    ],
+  )
+);
+
+// Date dropdown
+theContentList.add(
+  Row(
+    children: [
+      Expanded(
+        flex: 2, 
+        child: Text(
+          'Date:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: bwgDarkpurple,
+          ),
+        ),
+      ),
+      Expanded(
+        flex: 8, 
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: DropdownMenu<DateTime>(
+            initialSelection: gameDays.first,
+            expandedInsets: EdgeInsets.zero,
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 14,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            dropdownMenuEntries: [
+              for (var gameDay in gameDays)
+                DropdownMenuEntry<DateTime>(
+                  value: gameDay,
+                  label: dateToString(gameDay),
+                ),
+            ],
+            onSelected: (value) {
+              theBooking.gameDay = value!;
+            },
+          ),
+        ),
+      ),
+    ],
+  )
+);
 
     // Submit button
     theContentList.add(
