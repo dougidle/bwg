@@ -124,7 +124,24 @@ class _BWGHomePageState extends State<BWGHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         leading: IconButton(
-          onPressed: _loadBookings, 
+          onPressed: () {
+            // Show an alert dialog when the button is pressed
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text("Barming Wargamers"),
+                content: const Text("Version: x.x.x bx"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: const Text("OK"),
+                  ),
+                ],
+              ),
+            );
+          }, 
           icon: Icon(Icons.info)
         ),
         actions: [
