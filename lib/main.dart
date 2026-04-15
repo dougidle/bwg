@@ -1,5 +1,6 @@
 import 'package:bwg/resources/bwg_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'widgets/bwg_widgets.dart';
 import 'widgets/booking.dart';
 
@@ -63,6 +64,22 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
 
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+    installerStore: 'Unknown',
+  );
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
   void _setDoneState() {
     setState(() {
     _loadState = LoadStates.done;
@@ -99,6 +116,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+     _initPackageInfo();
     controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
           ..addListener(() {
             setState(() {});
@@ -114,7 +132,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-
+  
     Widget theIcon;
     if (_loadState == LoadStates.loading) {
       theIcon = Padding(
@@ -186,7 +204,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
               context: context,
               builder: (ctx) => AlertDialog(
                 title: const Text("Barming Wargamers"),
-                content: const Text("Version: x.x.x bx"),
+                content: Text("Version: ${_packageInfo.version}\nBuild: ${_packageInfo.buildNumber}"),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
