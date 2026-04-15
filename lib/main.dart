@@ -58,9 +58,10 @@ class BWGHomePage extends StatefulWidget {
 
 enum LoadStates { done, loading, error}
 
-class _BWGHomePageState extends State<BWGHomePage> {
+class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin {
   LoadStates _loadState = LoadStates.done;
   DateTime theDate =  DateTime.now();
+  late AnimationController controller;
 
   void _setDoneState() {
     setState(() {
@@ -85,8 +86,6 @@ class _BWGHomePageState extends State<BWGHomePage> {
       _setLoadingState();
       await getBookingsFromRemoteDb();
       _setDoneState();
-    } else {
-      print("Can't do it - I'm already doing it!");
     }
   }
 
@@ -98,13 +97,70 @@ class _BWGHomePageState extends State<BWGHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
+          ..addListener(() {
+            setState(() {});
+          })
+          ..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     Widget theIcon;
     if (_loadState == LoadStates.loading) {
-      theIcon = Icon(Icons.warning_rounded);
+      theIcon = Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Icon(Icons.warning_rounded)
+      );
     } else {
-      theIcon = Icon(Icons.refresh);
+      theIcon = Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Icon(Icons.refresh)
+      );
+    }
+
+    Widget theProgressIndicator = 
+    Padding(
+      padding: EdgeInsets.only(left: 0,right: 20,top: 8,bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 14.0,
+                  width: 14.0,
+                  child:CircularProgressIndicator(
+                    value: controller.value,
+                    color: bwgLilac,
+                  ),
+                )   
+              ]
+            )
+          )
+        ]
+      )
+    );
+
+    Widget theRefreshIcon;
+    if (_loadState == LoadStates.loading) {
+      theRefreshIcon = theProgressIndicator;
+    } else {
+      theRefreshIcon = IconButton(
+          onPressed: _loadBookings, 
+          icon: theIcon
+        );
     }
 
     // This method is rerun every time setState is called, for instance as done
@@ -145,10 +201,7 @@ class _BWGHomePageState extends State<BWGHomePage> {
           icon: Icon(Icons.info)
         ),
         actions: [
-          IconButton(
-            onPressed: _loadBookings, 
-            icon: theIcon
-          )
+          theRefreshIcon
         ],
       ),
       backgroundColor: Colors.black,
