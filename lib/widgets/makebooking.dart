@@ -13,7 +13,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
   //final void Function(String) onSubmitGuess;
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
-  Booking theBooking = Booking("", "", "", DateTime.now());
+  Booking theBooking = Booking("", "", "No game chosen", DateTime.now());
   bool _isExpanded = true;
 
   List<String> availableGameSystems = [
@@ -216,7 +216,7 @@ theContentList.add(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: DropdownMenu<String>(
-            initialSelection: availableGameSystems.first,
+            initialSelection: theBooking.gameSystem,
             expandedInsets: EdgeInsets.zero,
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
@@ -234,14 +234,17 @@ theContentList.add(
               ),
             ),
             dropdownMenuEntries: [
-              for (var gameDay in availableGameSystems)
+              for (var gameSystem in availableGameSystems)
                 DropdownMenuEntry<String>(
-                  value: gameDay,
-                  label: gameDay,
+                  value: gameSystem,
+                  label: gameSystem,
                 ),
             ],
             onSelected: (value) {
-              theBooking.gameSystem = value.toString();
+              print("SELECTED: $value");
+              setState(() {
+                theBooking.gameSystem = value.toString();
+              });
             },
           ),
         ),

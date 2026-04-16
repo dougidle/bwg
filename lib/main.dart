@@ -32,6 +32,7 @@ class BWGApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
+        useMaterial3: true,
         colorScheme: .fromSeed(seedColor: Colors.green),
       ),
       home: const BWGHomePage(title: 'Barming Wargamers'),
@@ -118,9 +119,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     super.initState();
      _initPackageInfo();
     controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
-          ..addListener(() {
-            setState(() {});
-          })
           ..repeat(reverse: true);
   }
 
@@ -159,10 +157,15 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
                 SizedBox(
                   height: 14.0,
                   width: 14.0,
-                  child:CircularProgressIndicator(
-                    value: controller.value,
-                    color: bwgLilac,
-                  ),
+                  child: AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        return CircularProgressIndicator(
+          value: controller.value,
+          color: bwgLilac,
+        );
+      },
+    ),
                 )   
               ]
             )
@@ -233,21 +236,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
               });
               },*/
             ),
-            /*DayBookingTile(
-              "2 April 2026",
-              [
-                Booking("Doug I", "Kris R", "Warhammer 40,000"),
-                Booking("Matt B", "Simon L", "Warhammer 40,000"),
-                Booking("Cam B", "Tommy F", "Warhammer 40,000")
-              ]
-            ),
-            DayBookingTile(
-              "9 April 2026",
-              [
-                Booking("Matt B", "James D", "Warhammer 40,000"),
-                Booking("Doug I", "Cam B", "Horus Heresy")
-              ]
-              ),*/
           ],
         ),
       ),
