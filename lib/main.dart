@@ -236,6 +236,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
               });
               },*/
             ),
+            WikipediaTile(),
           ],
         ),
       ),
