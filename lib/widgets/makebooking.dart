@@ -299,7 +299,7 @@ void initState() {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: DropdownMenu<DateTime>(
-                initialSelection: gameDays.first,
+                initialSelection: DateTime(1970, 1, 1, 0, 0),
                 expandedInsets: EdgeInsets.zero,
                 inputDecorationTheme: InputDecorationTheme(
                   filled: true,
