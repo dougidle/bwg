@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'bwg_widgets.dart';
 import 'booking.dart';
 import '../resources/bwg_colors.dart';
-import '../utilities/datetime.dart';
 
 class DayBookingTile extends StatefulWidget {
   const DayBookingTile(this.theDate, this.theBookings, {super.key});
