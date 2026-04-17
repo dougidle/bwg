@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'booking.dart';
 import '../resources/bwg_colors.dart';
+import 'package:intl/intl.dart';
 
 class MakeBookingTile extends StatefulWidget {
   const MakeBookingTile({super.key});
@@ -128,6 +129,7 @@ void initState() {
     List<Widget> theContentList = [];
     List<Widget> theWidgetList = [];
     final List<DateTime> gameDays = getNextGameDays();
+    final formatter = DateFormat('d MMMM yyyy');
 
     // Widget title
     theWidgetList.add(
@@ -328,7 +330,7 @@ void initState() {
                   for (var gameDay in gameDays)
                     DropdownMenuEntry<DateTime>(
                       value: gameDay,
-                      label: dateToString(gameDay),
+                      label: formatter.format(gameDay),
                     ),
                 ],
                 onSelected: (value) {
