@@ -13,7 +13,11 @@ class _MakeBookingState extends State<MakeBookingTile> {
   //final void Function(String) onSubmitGuess;
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
-  Booking theBooking = Booking("", "", "No game chosen", DateTime(1970, 1, 1, 0, 0));
+  Booking theBooking = Booking(
+    bookingDate: DateTime(1970, 1, 1, 0, 0),
+    gameSystem: "No game chosen", 
+    player1: "", 
+    player2: "");
   bool _isExpanded = true;
 
   List<String> availableGameSystems = [
@@ -27,7 +31,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
   bool _isValidBooking() {
     bool isValid = false;
 
-    if (theBooking.player1 != "" && theBooking.player2 !="" && theBooking.gameSystem != "No game chosen" && theBooking.gameDay != DateTime(1970, 1, 1, 0, 0)) {
+    if (theBooking.player1 != "" && theBooking.player2 !="" && theBooking.gameSystem != "No game chosen" && theBooking.bookingDate != DateTime(1970, 1, 1, 0, 0)) {
       isValid = true;
     }
     return isValid;
@@ -37,7 +41,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
     print("Player 1: ${theBooking.player1}");
     print("Player 2: ${theBooking.player2}");
     print("Game: ${theBooking.gameSystem}");
-    print("Date: ${theBooking.gameDay.toString()}");
+    print("Date: ${theBooking.bookingDate.toString()}");
     _player1Controller.clear();
     _player2Controller.clear();
   }
@@ -64,7 +68,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
 
   void _setPlayer1() {
     setState(() {
-      theBooking.player1 = _player1Controller.text;
+      theBooking.player1= _player1Controller.text;
     });
   }
 
@@ -329,7 +333,7 @@ void initState() {
                 ],
                 onSelected: (value) {
                   setState(() {
-                    theBooking.gameDay = value!;
+                    theBooking.bookingDate = value!;
                   });
                 },
               ),

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'widgets/bwg_widgets.dart';
 import 'widgets/booking.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const BWGApp());
@@ -64,6 +66,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   LoadStates _loadState = LoadStates.done;
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
+  late List<Booking> theBookingsList;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -73,6 +76,22 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     buildSignature: 'Unknown',
     installerStore: 'Unknown',
   );
+
+  Future<List<Booking>> fetchBookings() async {
+  final url = Uri.parse(
+    'https://musterpointapp.com/api/getTableBookings.php',
+  );
+
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final List<dynamic> decoded = jsonDecode(response.body);
+
+    return BookingParser.parseBookings(decoded);
+  } else {
+    throw Exception('Failed to load bookings: ${response.statusCode}');
+  }
+}
 
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
@@ -102,7 +121,12 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   void _loadBookings() async {
     if (_loadState != LoadStates.loading) {
       _setLoadingState();
-      await getBookingsFromRemoteDb();
+      theBookingsList = await fetchBookings();
+      for (var theBooking in theBookingsList) {
+        print(
+        ' ${theBooking.bookingDate} | ${theBooking.gameSystem} | ${theBooking.player1} vs ${theBooking.player2}',
+        );
+      }
       _setDoneState();
     }
   }
@@ -112,6 +136,21 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       await Future.delayed(Duration(seconds: 1));
       print("Index: $i");
     }
+  }
+
+  Map<DateTime, List<Booking>> groupBookingsByDate(List<Booking> bookings) {
+    final Map<DateTime, List<Booking>> grouped = {};
+
+    for (var booking in bookings) {
+      // Normalize to just the date (remove time)
+      final dateOnly = DateTime(
+        booking.bookingDate.year,
+        booking.bookingDate.month,
+        booking.bookingDate.day,
+      );
+      grouped.putIfAbsent(dateOnly, () => []).add(booking);
+    }
+    return grouped;
   }
 
   @override
@@ -130,6 +169,19 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    List<DayBookingTile> allDaysBookingsTileList = [];
+    final theGroupedBookings = groupBookingsByDate(theBookingsList);
+    for (var entry in theGroupedBookings.entries) {
+      final date = entry.key;
+      print('Date: ${date.toIso8601String().split('T').first}');
+
+      allDaysBookingsTileList.add(
+        DayBookingTile(
+          entry.key, 
+          entry.value
+        )
+      );
+    }
   
     Widget theIcon;
     if (_loadState == LoadStates.loading) {
@@ -158,14 +210,14 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
                   height: 14.0,
                   width: 14.0,
                   child: AnimatedBuilder(
-      animation: controller,
-      builder: (context, child) {
-        return CircularProgressIndicator(
-          value: controller.value,
-          color: bwgLilac,
-        );
-      },
-    ),
+                    animation: controller,
+                    builder: (context, child) {
+                      return CircularProgressIndicator(
+                        value: controller.value,
+                        color: bwgLilac,
+                      );
+                    },
+                  ),
                 )   
               ]
             )
@@ -236,8 +288,8 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
               });
               },*/
             ),
-            WikipediaTile(),
-          ],
+            //WikipediaTile(),
+          ] + allDaysBookingsTileList,
         ),
       ),
     );
