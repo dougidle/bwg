@@ -1,0 +1,1 @@
+enum LoadStates { done, loading, error, editing}

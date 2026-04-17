@@ -2,9 +2,10 @@ import 'package:bwg/resources/bwg_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'widgets/bwg_widgets.dart';
-import 'widgets/booking.dart';
+import 'model/booking.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'utilities/load_states.dart';
 
 void main() {
   runApp(const BWGApp());
@@ -59,8 +60,6 @@ class BWGHomePage extends StatefulWidget {
   @override
   State<BWGHomePage> createState() => _BWGHomePageState();
 }
-
-enum LoadStates { done, loading, error}
 
 class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin {
   LoadStates _loadState = LoadStates.done;

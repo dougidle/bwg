@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'bwg_widgets.dart';
-import 'booking.dart';
+import '../model/booking.dart';
 import '../resources/bwg_colors.dart';
 
 class DayBookingTile extends StatefulWidget {

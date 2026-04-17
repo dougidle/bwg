@@ -1,7 +1,9 @@
+import 'package:bwg/utilities/load_states.dart';
 import 'package:flutter/material.dart';
-import 'booking.dart';
+import '../model/booking.dart';
 import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
+import '../model/make_booking_viewmodel.dart';
 
 class MakeBookingTile extends StatefulWidget {
   const MakeBookingTile({super.key});
@@ -18,7 +20,9 @@ class _MakeBookingState extends State<MakeBookingTile> {
     gameSystem: "No game chosen", 
     player1: "", 
     player2: "");
+  final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: "No game chosen",player1: "",player2: ""));
   bool _isExpanded = true;
+  final formatter = DateFormat('d MMMM yyyy');
 
   List<String> availableGameSystems = [
     "No game chosen",
@@ -35,49 +39,6 @@ class _MakeBookingState extends State<MakeBookingTile> {
       isValid = true;
     }
     return isValid;
-  }
-
-  Future<void> _reserveGame() async {
-    final success = await theBooking.createBooking();
-    final formatter = DateFormat('d MMMM yyyy');
-
-    if (success) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Barming Wargamers"),
-          content: Text("Your booking between ${theBooking.player1} and ${theBooking.player2} to play ${theBooking.gameSystem} on ${formatter.format(theBooking.bookingDate)} has been received."),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                _player1Controller.clear();
-                _player2Controller.clear();
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Barming Wargamers"),
-          content: Text("There was an error with your booking."),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                _player1Controller.clear();
-                _player2Controller.clear();
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        ),
-      );
-    }
   }
 
   void _setExpanded() {
@@ -112,46 +73,48 @@ class _MakeBookingState extends State<MakeBookingTile> {
     });
   }
 
-  DateTime withTime(DateTime date, int hour, int minute) {
-    return DateTime(date.year, date.month, date.day, hour, minute);
-  }
+  @override
+  void initState() {
+    super.initState();
 
-  String dateToString(DateTime theDate) {
-    return "${theDate.year}-"
-       "${theDate.month.toString().padLeft(2, '0')}-"
-       "${theDate.day.toString().padLeft(2, '0')}  "
-       "${theDate.hour.toString().padLeft(2, '0')}:"
-       "${theDate.minute.toString().padLeft(2, '0')}";
-  }
-
-  List<DateTime> getNextGameDays() {
-    List<DateTime> theAvailableGameDays = [];
-    DateTime currentDate = DateTime.now();
-    currentDate = withTime(currentDate, 19, 00);
-    int todayDay = currentDate.weekday;
-
-    if (todayDay != 4) {
-        var days = (7 - todayDay + 4) % 7;
-        currentDate = currentDate.add(Duration(days: days));
+    viewModel.addListener(() {
+    if (viewModel.theStatus == LoadStates.done) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Barming Wargamers"),
+          content: Text("Your booking between ${theBooking.player1} and ${theBooking.player2} to play ${theBooking.gameSystem} on ${formatter.format(theBooking.bookingDate)} has been received."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                viewModel.updateStatus(LoadStates.editing);
+                _player1Controller.clear();
+                _player2Controller.clear();
+                setState(() {
+                  theBooking = Booking(
+                    bookingDate: DateTime(1970, 1, 1, 0, 0),
+                    gameSystem: "No game chosen",
+                    player1: "",
+                    player2: "");
+                });
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
     }
+  });
 
-    theAvailableGameDays.add(currentDate);
-    theAvailableGameDays.add(currentDate.add(Duration(days: 7)));
-
-    return theAvailableGameDays;
-}
-
-@override
-void initState() {
-  super.initState();
-
-  // Start listening to changes.
-  _player1Controller.addListener(_setPlayer1);
-  _player2Controller.addListener(_setPlayer2);
-}
+    // Start listening to changes.
+    _player1Controller.addListener(_setPlayer1);
+    _player2Controller.addListener(_setPlayer2);
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     Icon theIcon;
     if (_isExpanded) {
       theIcon = Icon(Icons.expand_less);
@@ -161,8 +124,7 @@ void initState() {
 
     List<Widget> theContentList = [];
     List<Widget> theWidgetList = [];
-    final List<DateTime> gameDays = getNextGameDays();
-    final formatter = DateFormat('d MMMM yyyy');
+    final List<DateTime> gameDays = viewModel.getNextGameDays();
 
     // Widget title
     theWidgetList.add(
@@ -387,7 +349,7 @@ void initState() {
               padding: const EdgeInsets.all(8.0),
               child: TextButton(
                 onPressed: !_isValidBooking() ? null : () {
-                  _reserveGame();
+                  viewModel.createBooking(theBooking);
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: bwgDarkpurple,
@@ -416,17 +378,27 @@ void initState() {
       padding: EdgeInsets.all(8.0),
       child: Card(
         color: bwgLilac,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: 
-                  theWidgetList
-              ) ,
-            ),
-          ]
-        ),
+        child: ListenableBuilder(
+          listenable: viewModel, 
+          builder: (context, child) {
+            return switch ((
+            viewModel.theStatus)) {
+              (LoadStates.loading) => 
+                CircularProgressIndicator(),
+              _ => Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: 
+                        theWidgetList
+                    ) ,
+                  ),
+                ]
+              )
+            };
+          } 
+        )
       )
     );
   }
