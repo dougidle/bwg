@@ -78,20 +78,21 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   );
 
   Future<List<Booking>> fetchBookings() async {
-  final url = Uri.parse(
-    'https://musterpointapp.com/api/getTableBookings.php',
-  );
+    final pastDate = DateTime.now().toUtc().subtract(const Duration(days: 28));
+    final url = Uri.parse(
+      'https://musterpointapp.com/api/getTableBookingsFromDate.php?date=$pastDate',
+    );
 
-  final response = await http.get(url);
+    final response = await http.get(url);
 
-  if (response.statusCode == 200) {
-    final List<dynamic> decoded = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> decoded = jsonDecode(response.body);
 
-    return BookingParser.parseBookings(decoded);
-  } else {
-    throw Exception('Failed to load bookings: ${response.statusCode}');
+      return BookingParser.parseBookings(decoded);
+    } else {
+      throw Exception('Failed to load bookings: ${response.statusCode}');
+    }
   }
-}
 
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
@@ -159,12 +160,15 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     List<DayBookingTile> allDaysBookingsTileList = [];
     final theGroupedBookings = groupBookingsByDate(theBookingsList);
-    for (var entry in theGroupedBookings.entries) {
+    final sortedEntries = theGroupedBookings.entries.toList()
+      ..sort((a, b) => b.key.compareTo(a.key)); // descending
+
+    for (var entry in sortedEntries) {
       allDaysBookingsTileList.add(
         DayBookingTile(
-          entry.key, 
-          entry.value
-        )
+          entry.key,
+          entry.value,
+        ),
       );
     }
   
