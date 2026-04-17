@@ -269,14 +269,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       body: Center(
         child: ListView(
           children: <Widget>[
-            MakeBookingTile(
-              /*onSubmitGuess: (String guess) {
-              setState(() { // NEW
-                _game.guess(guess);
-              });
-              },*/
-            ),
-            //WikipediaTile(),
+            MakeBookingTile(),
           ] + allDaysBookingsTileList,
         ),
       ),
