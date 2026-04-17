@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'bwg_widgets.dart';
 import 'booking.dart';
 import '../resources/bwg_colors.dart';
@@ -38,7 +39,8 @@ class _DayBookingState extends State<DayBookingTile> {
 
   @override
   Widget build(BuildContext context) {
-    String theDate = formatDate(widget.theDate);
+    final formatter = DateFormat('d MMMM yyyy');
+    String theDate = formatter.format(widget.theDate);
 
     Icon theIcon;
     if (_isExpanded) {
@@ -58,7 +60,7 @@ class _DayBookingState extends State<DayBookingTile> {
       Row(
         children: <Widget>[
           Text(
-            '${formatDate(widget.theDate)} - ${bookingsList.length} bookings',
+            '$theDate - ${bookingsList.length} bookings',
             style: TextStyle(
               color: bwgDarkpurple,
               fontWeight: FontWeight.bold,

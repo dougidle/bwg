@@ -66,7 +66,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   LoadStates _loadState = LoadStates.done;
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
-  late List<Booking> theBookingsList;
+  List<Booking> theBookingsList = [];
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -122,19 +122,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     if (_loadState != LoadStates.loading) {
       _setLoadingState();
       theBookingsList = await fetchBookings();
-      for (var theBooking in theBookingsList) {
-        print(
-        ' ${theBooking.bookingDate} | ${theBooking.gameSystem} | ${theBooking.player1} vs ${theBooking.player2}',
-        );
-      }
       _setDoneState();
-    }
-  }
-
-  Future<void> getBookingsFromRemoteDb() async {
-    for (int i = 0; i < 5; i++) {
-      await Future.delayed(Duration(seconds: 1));
-      print("Index: $i");
     }
   }
 
@@ -172,9 +160,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     List<DayBookingTile> allDaysBookingsTileList = [];
     final theGroupedBookings = groupBookingsByDate(theBookingsList);
     for (var entry in theGroupedBookings.entries) {
-      final date = entry.key;
-      print('Date: ${date.toIso8601String().split('T').first}');
-
       allDaysBookingsTileList.add(
         DayBookingTile(
           entry.key, 
