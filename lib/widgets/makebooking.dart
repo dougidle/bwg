@@ -38,11 +38,14 @@ class _MakeBookingState extends State<MakeBookingTile> {
     return isValid;
   }
 
-  void _reserveGame() {
-    print("Player 1: ${theBooking.player1}");
-    print("Player 2: ${theBooking.player2}");
-    print("Game: ${theBooking.gameSystem}");
-    print("Date: ${theBooking.bookingDate.toString()}");
+  Future<void> _reserveGame() async {
+    final success = await theBooking.createBooking();
+
+    if (success) {
+      print('Booking created!');
+    } else {
+      print('Failed to create booking');
+    }
     _player1Controller.clear();
     _player2Controller.clear();
   }
