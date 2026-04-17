@@ -4,78 +4,43 @@ import 'bwg_widgets.dart';
 import '../model/booking.dart';
 import '../resources/bwg_colors.dart';
 
-class DayBookingTile extends StatefulWidget {
-  const DayBookingTile(this.theDate, this.theBookings, {super.key});
+class DayBookingTile extends StatelessWidget {
+  const DayBookingTile(
+    this.theDate,
+    this.theBookings, {
+    required this.isExpanded,
+    required this.onToggle,
+    super.key,
+  });
+
   final DateTime theDate;
   final List<Booking> theBookings;
-
-  @override
-  State<DayBookingTile> createState() => _DayBookingState();
-}
-
-class _DayBookingState extends State<DayBookingTile> {
-  bool _isExpanded = true;
-
-  void _setExpanded() {
-    setState(() {
-    _isExpanded = true;
-    });
-  }
-
-  void _setCollapsed() {
-    setState(() {
-    _isExpanded = false;
-    });
-  }
-
-  void _doExpand() {
-    if (_isExpanded) {
-      _setCollapsed();
-    } else {
-      _setExpanded();
-    }
-  }
+  final bool isExpanded;
+  final VoidCallback onToggle;
 
   @override
   Widget build(BuildContext context) {
     final formatter = DateFormat('d MMMM yyyy');
-    String theDate = formatter.format(widget.theDate);
+    String theFormattedDate = formatter.format(theDate);
 
     Icon theIcon;
-    if (_isExpanded) {
+    if (isExpanded) {
       theIcon = Icon(Icons.expand_less);
     } else {
       theIcon = Icon(Icons.expand_more);
     }
 
-    List<Widget> theWidgetList = [];
     List<Widget> bookingsList = [];
 
-    for (var i = 0; i < widget.theBookings.length; i++) {
-      bookingsList.add(BookingTile(widget.theBookings[i].player1, widget.theBookings[i].player2,widget.theBookings[i].gameSystem));
-    }
-
-    theWidgetList.add(
-      Row(
-        children: <Widget>[
-          Text(
-            '$theDate - ${bookingsList.length} bookings',
-            style: TextStyle(
-              color: bwgDarkpurple,
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0
-            )
-          ),
-          Spacer(),
-          IconButton(
-            onPressed: _doExpand, 
-            icon: theIcon
-          ),
-        ]
-      )
-    );
-    if (_isExpanded) {
-      theWidgetList += bookingsList;
+    for (var i = 0; i < theBookings.length; i++) {
+      bookingsList.add(
+        BookingTile(
+          theBookings[i].player1, 
+          theBookings[i].player2,
+          theBookings[i].gameSystem,
+          key: ValueKey('${theBookings[i].player1}-${theBookings[i].player2}-$i'),
+        )
+      );
     }
 
     return Padding(
@@ -87,8 +52,26 @@ class _DayBookingState extends State<DayBookingTile> {
             Padding(
               padding: EdgeInsets.all(8.0),
               child: Column(
-                children: 
-                  theWidgetList
+                children: [
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '$theFormattedDate - ${bookingsList.length} bookings',
+                        style: TextStyle(
+                          color: bwgDarkpurple,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0
+                        )
+                      ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: onToggle, 
+                        icon: theIcon
+                      ),
+                    ]
+                  ),
+                  if (isExpanded) ...bookingsList,
+                ]
               ) ,
             ),
           ]

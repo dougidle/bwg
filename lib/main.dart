@@ -66,6 +66,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
   List<Booking> theBookingsList = [];
+   Map<String, bool> expandedState = {};
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -163,10 +164,18 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       ..sort((a, b) => b.key.compareTo(a.key)); // descending
 
     for (var entry in sortedEntries) {
+      final key = entry.key.toIso8601String();
       allDaysBookingsTileList.add(
         DayBookingTile(
           entry.key,
           entry.value,
+          isExpanded: expandedState[key] ?? true,
+          onToggle: () {
+            setState(() {
+              expandedState[key] = !(expandedState[key] ?? true);
+            });
+          },
+          key: ValueKey(key),
         ),
       );
     }
