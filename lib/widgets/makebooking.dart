@@ -11,7 +11,6 @@ class MakeBookingTile extends StatefulWidget {
 }
 
 class _MakeBookingState extends State<MakeBookingTile> {
-  //final void Function(String) onSubmitGuess;
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
   Booking theBooking = Booking(
@@ -40,14 +39,45 @@ class _MakeBookingState extends State<MakeBookingTile> {
 
   Future<void> _reserveGame() async {
     final success = await theBooking.createBooking();
+    final formatter = DateFormat('d MMMM yyyy');
 
     if (success) {
-      print('Booking created!');
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Barming Wargamers"),
+          content: Text("Your booking between ${theBooking.player1} and ${theBooking.player2} to play ${theBooking.gameSystem} on ${formatter.format(theBooking.bookingDate)} has been received."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                _player1Controller.clear();
+                _player2Controller.clear();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
     } else {
-      print('Failed to create booking');
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Barming Wargamers"),
+          content: Text("There was an error with your booking."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                _player1Controller.clear();
+                _player2Controller.clear();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
     }
-    _player1Controller.clear();
-    _player2Controller.clear();
   }
 
   void _setExpanded() {
