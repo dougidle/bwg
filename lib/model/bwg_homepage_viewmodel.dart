@@ -12,7 +12,7 @@ class BWGHomePageViewModel extends ChangeNotifier {
   BWGHomePageViewModel();
 
   Future<List<Booking>> fetchBookings() async {
-    final pastDate = DateTime.now().toUtc().subtract(const Duration(days: 28));
+    final pastDate = DateTime.now().toUtc().subtract(const Duration(days: 1));
     final url = Uri.parse(
       'https://musterpointapp.com/api/getTableBookingsFromDate.php?date=$pastDate',
     );
