@@ -1,6 +1,4 @@
-import 'package:bwg/utilities/load_states.dart';
 import 'package:flutter/material.dart';
-import '../model/booking.dart';
 import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
 import '../model/drawer_viewmodel.dart';
@@ -247,7 +245,8 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                             // Validate returns true if the form is valid, or false otherwise.
                             if (_formKey.currentState!.validate()) {
                               _updateNames();
-                              print("Saving a user $firstName $lastName");
+                              print("Saving a user $firstName $lastName ($nickname)");
+                              Navigator.pop(context);
                             }
                         },
                         style: TextButton.styleFrom(

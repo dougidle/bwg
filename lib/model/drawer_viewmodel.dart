@@ -1,7 +1,4 @@
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'booking.dart';
-import 'dart:io';
 import '../utilities/load_states.dart';
 
 class DrawerViewModel extends ChangeNotifier {
