@@ -18,6 +18,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   LoadStates _loadState = LoadStates.done;
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Booking> theBookingsList = [];
    Map<String, bool> expandedState = {};
    final viewModel = BWGHomePageViewModel();
@@ -156,6 +157,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     }
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         foregroundColor: bwgLilac,
         backgroundColor: Colors.black,
@@ -182,7 +184,17 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
           icon: Icon(Icons.info)
         ),
         actions: [
-          theRefreshIcon
+          theRefreshIcon,
+          Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          }
+        ),
         ],
       ),
       backgroundColor: Colors.black,
@@ -192,6 +204,9 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
             MakeBookingTile(),
           ] + allDaysBookingsTileList,
         ),
+      ),
+      drawer: Drawer(
+        child: BWGDrawerMenu()
       ),
     );
   }
