@@ -86,6 +86,9 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     final sortedEntries = theGroupedBookings.entries.toList()
       ..sort((a, b) => b.key.compareTo(a.key)); // descending
 
+    Color loginIconColor = bwgRed;
+    Icon loginIcon = Icon(Icons.person_off);
+
     for (var entry in sortedEntries) {
       final key = entry.key.toIso8601String();
       allDaysBookingsTileList.add(
@@ -188,10 +191,11 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
           Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.person),
+              icon: loginIcon,
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
+              color: loginIconColor,
             );
           }
         ),
