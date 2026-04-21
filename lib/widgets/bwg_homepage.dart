@@ -210,6 +210,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         ),
       ),
       drawer: Drawer(
+        backgroundColor: bwgLilac,
         child: BWGDrawerMenu()
       ),
     );
