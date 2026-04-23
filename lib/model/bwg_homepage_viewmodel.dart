@@ -3,13 +3,23 @@ import 'package:flutter/material.dart';
 import 'booking.dart';
 import '../utilities/load_states.dart';
 import 'dart:convert';
+import '../repositories/user_repository.dart';
+import '../model/user.dart';
 
 class BWGHomePageViewModel extends ChangeNotifier {
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
+  final userRepository = UserRepository.instance;
+  User? get theLoggedInUser => userRepository.currentUser;
 
-  BWGHomePageViewModel();
+  BWGHomePageViewModel() {
+    userRepository.addListener(_onUserChanged);
+  }
+
+  void _onUserChanged() {
+    notifyListeners();
+  }
 
   Future<List<Booking>> fetchBookings() async {
     final pastDate = DateTime.now().toUtc().subtract(const Duration(days: 1));

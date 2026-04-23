@@ -24,6 +24,8 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   late User theLoggedInUser; 
   Map<String, bool> expandedState = {};
   final viewModel = BWGHomePageViewModel();
+  Color loginIconColor = bwgRed;
+  Icon loginIcon = Icon(Icons.person_off);
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -67,6 +69,30 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     _initPackageInfo();
     _loadBookings();
 
+    // Handle initial value (already loaded from DB)
+    final user = viewModel.theLoggedInUser;
+    if (user != null ) {
+      loginIcon = Icon(Icons.person);
+      loginIconColor = bwgGreen;
+    }
+
+    // Handle future updates
+    viewModel.addListener(() {
+      final user = viewModel.theLoggedInUser;
+
+      if (user != null ) {
+        loginIcon = Icon(Icons.person);
+        loginIconColor = bwgGreen;
+      } else {
+        loginIcon = Icon(Icons.person_off);
+        loginIconColor = bwgRed;
+      }
+  });
+
+    // Start listening to changes.
+    //_player1Controller.addListener(_setPlayer1);
+    //_player2Controller.addListener(_setPlayer2);
+
     controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
           ..repeat(reverse: false);
   }
@@ -91,9 +117,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     final theGroupedBookings = viewModel.groupBookingsByDate(theBookingsList);
     final sortedEntries = theGroupedBookings.entries.toList()
       ..sort((a, b) => b.key.compareTo(a.key)); // descending
-
-    Color loginIconColor = bwgRed;
-    Icon loginIcon = Icon(Icons.person_off);
 
     for (var entry in sortedEntries) {
       final key = entry.key.toIso8601String();

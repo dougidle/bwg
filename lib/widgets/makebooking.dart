@@ -82,7 +82,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
   @override
   void initState() {
     super.initState();
-    // ✅ 1. Handle initial value (already loaded from DB)
+    // Handle initial value (already loaded from DB)
     final user = viewModel.theLoggedInUser;
 
     if (user != null && _player1Controller.text.isEmpty) {
@@ -90,7 +90,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
       theBooking.player1 = user.userNickName;
     }
 
-    // ✅ 2. Handle future updates
+    // Handle future updates
     viewModel.addListener(() {
       final user = viewModel.theLoggedInUser;
 
