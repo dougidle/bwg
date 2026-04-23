@@ -121,7 +121,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            hintText: "Your name",
+                            hintText: "Your first name",
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                               borderRadius: BorderRadius.circular(12),                  
@@ -163,7 +163,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            hintText: "Your name",
+                            hintText: "Your last name",
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                               borderRadius: BorderRadius.circular(12),                  
@@ -219,7 +219,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            hintText: "Your name",
+                            hintText: "None set",
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                               borderRadius: BorderRadius.circular(12),                  
