@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'bwg_widgets.dart';
 import '../model/booking.dart';
+import '../model/user.dart';
 import '../utilities/load_states.dart';
 import '../model/bwg_homepage_viewmodel.dart';
 
@@ -20,8 +21,9 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   late AnimationController controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Booking> theBookingsList = [];
-   Map<String, bool> expandedState = {};
-   final viewModel = BWGHomePageViewModel();
+  late User theLoggedInUser; 
+  Map<String, bool> expandedState = {};
+  final viewModel = BWGHomePageViewModel();
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -38,7 +40,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       _packageInfo = info;
     });
   }
-
   
   void _loadBookings() async {
     if (_loadState == LoadStates.loading) return;
@@ -73,7 +74,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _loadBookings(); // 👈 refresh when app comes back
+      _loadBookings();
     }
   }
 

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'widgets/bwg_widgets.dart';
+import 'repositories/user_repository.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await UserRepository.instance.loadUser();
   runApp(const BWGApp());
 }
 

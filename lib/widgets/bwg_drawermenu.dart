@@ -225,6 +225,10 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                               borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                               borderRadius: BorderRadius.circular(12),                  
                             ),
+                            disabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                              borderRadius: BorderRadius.circular(12),                  
+                            ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                               borderRadius: BorderRadius.circular(12),                       

@@ -23,6 +23,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
   final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: "No game chosen",player1: "",player2: ""));
   bool _isExpanded = true;
   final formatter = DateFormat('d MMMM yyyy');
+  bool _player1AutoFilled = false;
 
   List<String> availableGameSystems = [
     "No game chosen",
@@ -73,11 +74,28 @@ class _MakeBookingState extends State<MakeBookingTile> {
     });
   }
 
+  /*@override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    viewModel.fetchLoggedInUser();
+  }*/
+
   @override
   void initState() {
     super.initState();
 
     viewModel.addListener(() {
+      if (!_player1AutoFilled &&
+        viewModel.theLoggedInUser != null) {
+      _player1Controller.text =
+          viewModel.theLoggedInUser!.userNickName;
+
+      theBooking.player1 =
+          viewModel.theLoggedInUser!.userNickName;
+
+      _player1AutoFilled = true;
+    }
+    
     if (viewModel.theStatus == LoadStates.done) {
       showDialog(
         context: context,
@@ -151,25 +169,29 @@ class _MakeBookingState extends State<MakeBookingTile> {
       Row(
         children: [
           Expanded(
-        flex: 2, 
-        child: Text(
-          'Player 1:',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: bwgDarkpurple,
+            flex: 2, 
+            child: Text(
+              'Player 1:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: bwgDarkpurple,
+              ),
+            ),
           ),
-        ),
-      ),
           Expanded(
             flex: 8, 
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
+              child: TextFormField(
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: "Your name",
+                  hintText: "None set",
                   enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                    borderRadius: BorderRadius.circular(12),                  
+                  ),
+                  disabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                     borderRadius: BorderRadius.circular(12),                  
                   ),
@@ -178,12 +200,13 @@ class _MakeBookingState extends State<MakeBookingTile> {
                     borderRadius: BorderRadius.circular(12),                       
                   ),
                 ),
-                controller: _player1Controller, 
+                enabled: false,
+                controller: TextEditingController(text: theBooking.player1),
               ),
             ),
           ),
         ],
-      )
+      ),
     );
 
     // Player 2

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'booking.dart';
 import 'dart:io';
 import '../utilities/load_states.dart';
+import '../repositories/user_repository.dart';
+import '../model/user.dart';
 
 class MakeBookingViewModel extends ChangeNotifier {
   //final MakeBookingViewModel theViewModel;
@@ -10,8 +12,16 @@ class MakeBookingViewModel extends ChangeNotifier {
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
+  User? get theLoggedInUser => userRepository.currentUser;
+  final userRepository = UserRepository.instance;
 
-  MakeBookingViewModel(this.theBooking);
+  MakeBookingViewModel(this.theBooking) {
+    userRepository.addListener(_onUserChanged);
+  }
+
+  void _onUserChanged() {
+    notifyListeners();
+  }
 
   Future<void> createBooking(Booking theBookingToMake) async {
     theBooking = theBookingToMake;

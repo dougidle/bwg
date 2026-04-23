@@ -51,12 +51,20 @@ class DatabaseHelper {
   }
 
   Future<int> insertUser(User theUser) async {
-  final db = await instance.database;
+    final db = await instance.database;
 
-  return await db.insert(
-    'loggedInUser',
-    theUser.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
-}
+    return await db.insert(
+      'loggedInUser',
+      theUser.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<User>> getAllUsers() async {
+    final db = await instance.database;
+
+    final result = await db.query('loggedInUser');
+
+    return result.map((json) => User.fromMap(json)).toList();
+  }
 }

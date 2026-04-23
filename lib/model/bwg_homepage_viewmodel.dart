@@ -28,7 +28,7 @@ class BWGHomePageViewModel extends ChangeNotifier {
     }
   }
 
-    Map<DateTime, List<Booking>> groupBookingsByDate(List<Booking> bookings) {
+  Map<DateTime, List<Booking>> groupBookingsByDate(List<Booking> bookings) {
     final Map<DateTime, List<Booking>> grouped = {};
 
     for (var booking in bookings) {

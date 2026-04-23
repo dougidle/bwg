@@ -1,7 +1,6 @@
 import 'package:bwg/model/user.dart';
 import 'package:flutter/material.dart';
 import '../utilities/load_states.dart';
-import '../database/database_helper.dart';
 import '../repositories/user_repository.dart';
 
 class DrawerViewModel extends ChangeNotifier {
@@ -10,8 +9,7 @@ class DrawerViewModel extends ChangeNotifier {
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
-  final db = DatabaseHelper.instance;
-  final userRepository = UserRepository();
+  final userRepository = UserRepository.instance;
 
   DrawerViewModel(this.firstName, this.lastName);
 
@@ -21,11 +19,20 @@ class DrawerViewModel extends ChangeNotifier {
   }
 
   Future<void> addUser(User theNewUser) async {
+    try {
+      final id = await userRepository.insert(theNewUser);
+      userRepository.setUser(theNewUser);
 
-  final id = await userRepository.insert(theNewUser);
+      print('Inserted user with nickname: ${theNewUser.userNickName} and id: $id');
+      final allUsers = await userRepository.getAll();
 
-  print('Inserted user with nickname: ${theNewUser.userNickName} and id: $id');
-}
-
-
+      for (final d in allUsers) {
+        print('DRAWER: firstname=${d.userFirstName}, lastname=${d.userLastName}, nickname=${d.userNickName}');
+      }
+      updateStatus(LoadStates.done);
+    } catch (e) {
+      errorMessage = e.toString();
+      updateStatus(LoadStates.error);
+    }
+  } 
 }
