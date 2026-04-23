@@ -23,7 +23,6 @@ class DrawerViewModel extends ChangeNotifier {
       final id = await userRepository.insert(theNewUser);
       userRepository.setUser(theNewUser);
 
-      print('Inserted user with nickname: ${theNewUser.userNickName} and id: $id');
       final allUsers = await userRepository.getAll();
 
       for (final d in allUsers) {

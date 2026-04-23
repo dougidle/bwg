@@ -23,7 +23,6 @@ class _MakeBookingState extends State<MakeBookingTile> {
   final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: "No game chosen",player1: "",player2: ""));
   bool _isExpanded = true;
   final formatter = DateFormat('d MMMM yyyy');
-  bool _player1AutoFilled = false;
 
   List<String> availableGameSystems = [
     "No game chosen",
