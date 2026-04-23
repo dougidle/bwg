@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
 import '../model/drawer_viewmodel.dart';
+import '../model/user.dart';
 
 class BWGDrawerMenu extends StatefulWidget {
   const BWGDrawerMenu({super.key});
@@ -245,7 +246,15 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                             // Validate returns true if the form is valid, or false otherwise.
                             if (_formKey.currentState!.validate()) {
                               _updateNames();
-                              print("Saving a user $firstName $lastName ($nickname)");
+                              viewModel.addUser(
+                                User(
+                                  authId: "",
+                                  userFirstName: firstName,
+                                  userLastName: lastName,
+                                  userNickName: nickname,
+                                  loginType: ""
+                                )
+                              );
                               Navigator.pop(context);
                             }
                         },
