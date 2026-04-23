@@ -83,17 +83,23 @@ class _MakeBookingState extends State<MakeBookingTile> {
   @override
   void initState() {
     super.initState();
+    // ✅ 1. Handle initial value (already loaded from DB)
+    final user = viewModel.theLoggedInUser;
 
+    if (user != null && _player1Controller.text.isEmpty) {
+      _player1Controller.text = user.userNickName;
+      theBooking.player1 = user.userNickName;
+    }
+
+    // ✅ 2. Handle future updates
     viewModel.addListener(() {
-      if (!_player1AutoFilled &&
-        viewModel.theLoggedInUser != null) {
-      _player1Controller.text =
-          viewModel.theLoggedInUser!.userNickName;
+      final user = viewModel.theLoggedInUser;
 
-      theBooking.player1 =
-          viewModel.theLoggedInUser!.userNickName;
+      if (user != null && _player1Controller.text.isEmpty) {
+        _player1Controller.text = viewModel.theLoggedInUser!.userNickName;
+        theBooking.player1 = viewModel.theLoggedInUser!.userNickName;
 
-      _player1AutoFilled = true;
+      //_player1AutoFilled = true;
     }
     
     if (viewModel.theStatus == LoadStates.done) {
