@@ -14,7 +14,7 @@ class BWGHomePage extends StatefulWidget {
   State<BWGHomePage> createState() => _BWGHomePageState();
 }
 
-class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin {
+class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin, WidgetsBindingObserver {
   LoadStates _loadState = LoadStates.done;
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
@@ -39,42 +39,47 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     });
   }
 
-  void _setDoneState() {
-    setState(() {
-    _loadState = LoadStates.done;
-    });
-  }
+  
+  void _loadBookings() async {
+    if (_loadState == LoadStates.loading) return;
 
-  void _setLoadingState() {
     setState(() {
     _loadState = LoadStates.loading;
     });
-  }
-
-  void _setErrorState() {
-    setState(() {
-    _loadState = LoadStates.error;
-    });
-  }
-
-  void _loadBookings() async {
-    if (_loadState != LoadStates.loading) {
-      _setLoadingState();
-      theBookingsList = await viewModel.fetchBookings();
-      _setDoneState();
+    try {
+      final bookings = await viewModel.fetchBookings();
+      setState(() {
+        theBookingsList = bookings;
+        _loadState = LoadStates.done;
+      });
+    } catch (_) {
+      setState(() {
+      _loadState = LoadStates.error;
+      });
     }
   }
 
   @override
   void initState() {
     super.initState();
-     _initPackageInfo();
+    WidgetsBinding.instance.addObserver(this);
+    _initPackageInfo();
+    _loadBookings();
+
     controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
           ..repeat(reverse: false);
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadBookings(); // 👈 refresh when app comes back
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     super.dispose();
   }
