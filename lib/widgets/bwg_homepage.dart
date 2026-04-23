@@ -7,6 +7,7 @@ import '../model/user.dart';
 import '../utilities/load_states.dart';
 import '../model/bwg_homepage_viewmodel.dart';
 import '../widgets/usericon.dart';
+import '../widgets/contentcard.dart';
 
 class BWGHomePage extends StatefulWidget {
   const BWGHomePage({super.key, required this.title});
@@ -115,6 +116,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     List<DayBookingTile> allDaysBookingsTileList = [];
+    List<Widget> theWidgetList = [];
     final theGroupedBookings = viewModel.groupBookingsByDate(theBookingsList);
     final sortedEntries = theGroupedBookings.entries.toList()
       ..sort((a, b) => b.key.compareTo(a.key)); // descending
@@ -233,8 +235,14 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       body: Center(
         child: ListView(
           children: <Widget>[
-            MakeBookingTile(),
-          ] + allDaysBookingsTileList,
+            if (viewModel.theLoggedInUser == null) 
+             ContentCard(
+              "Please login using the icon top right before you use the app."
+            ) else ...[
+              MakeBookingTile(),
+              ...allDaysBookingsTileList
+            ] 
+          ] 
         ),
       ),
       drawer: Drawer(
