@@ -16,19 +16,28 @@ class BookingTile extends StatelessWidget {
             padding: EdgeInsets.all(8.0),
             child: Row(
               children: <Widget>[
-                Text(player1),
+                Text(
+                  player1,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Spacer(),
                 Text("vs."),
                 Spacer(),
-                Text(player2)
+                Text(
+                  player2,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
               ]
             ) ,
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
             child: Row(
               children: <Widget>[
-                Text(gameSystem),
+                Text(
+                  gameSystem,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 Spacer()
               ]
             )
