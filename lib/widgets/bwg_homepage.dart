@@ -6,6 +6,7 @@ import '../model/booking.dart';
 import '../model/user.dart';
 import '../utilities/load_states.dart';
 import '../model/bwg_homepage_viewmodel.dart';
+import '../widgets/usericon.dart';
 
 class BWGHomePage extends StatefulWidget {
   const BWGHomePage({super.key, required this.title});
@@ -219,12 +220,10 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
           theRefreshIcon,
           Builder(
           builder: (context) {
-            return IconButton(
-              icon: loginIcon,
+            return UserIconButton(
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
-              color: loginIconColor,
             );
           }
         ),
