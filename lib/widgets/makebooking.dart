@@ -28,6 +28,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
     "No game chosen",
     "Warhammer 40,000",
     "Warhammer: The Old World",
+    "Warhammer: Horus Heresy",
     "Kill Team",
     "Blood Bowl"
   ];
