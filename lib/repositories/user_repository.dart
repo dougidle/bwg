@@ -43,4 +43,10 @@ class UserRepository extends ChangeNotifier {
   Future<List<User>> getAll() async {
     return await dbHelper.getAllUsers();
   }
+
+  Future<void> deleteAllUsers() async {
+    await dbHelper.deleteAllUsers();
+    _currentUser = null;
+    notifyListeners();
+  }
 }

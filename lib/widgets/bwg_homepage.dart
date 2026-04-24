@@ -116,7 +116,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     List<DayBookingTile> allDaysBookingsTileList = [];
-    List<Widget> theWidgetList = [];
     final theGroupedBookings = viewModel.groupBookingsByDate(theBookingsList);
     final sortedEntries = theGroupedBookings.entries.toList()
       ..sort((a, b) => b.key.compareTo(a.key)); // descending

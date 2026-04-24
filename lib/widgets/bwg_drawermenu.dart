@@ -12,8 +12,8 @@ class BWGDrawerMenu extends StatefulWidget {
 }
 
 class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  late TextEditingController _firstNameController = TextEditingController();
+  late TextEditingController _lastNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String firstName = "";
   String lastName = "";
@@ -21,6 +21,16 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
   Color iconColor = bwgRed;
   final viewModel = DrawerViewModel("","");
   final formatter = DateFormat('d MMMM yyyy');
+
+  void makeNickname() {
+    if (firstName.isNotEmpty && lastName.isNotEmpty) {
+        nickname = "$firstName ${lastName[0]}";
+      } else if (firstName.isNotEmpty) {
+        nickname = firstName;
+      } else {
+        nickname = "";
+      }
+  }
 
   void _updateNames() {
     setState(() {
@@ -31,15 +41,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
       } else {
         iconColor = bwgRed;
       }
-    
-
-      if (firstName.isNotEmpty && lastName.isNotEmpty) {
-        nickname = "$firstName ${lastName[0]}";
-      } else if (firstName.isNotEmpty) {
-        nickname = firstName;
-      } else {
-        nickname = "";
-      }
+      makeNickname();
     });
   }
 
@@ -51,36 +53,18 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
   @override
   void initState() {
     super.initState();
+    final user = viewModel.theLoggedInUser;
 
-    viewModel.addListener(() {
-    /*if (viewModel.theStatus == LoadStates.done) {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text("Barming Wargamers"),
-          content: Text("Your booking between ${theBooking.player1} and ${theBooking.player2} to play ${theBooking.gameSystem} on ${formatter.format(theBooking.bookingDate)} has been received."),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                viewModel.updateStatus(LoadStates.editing);
-                _player1Controller.clear();
-                _player2Controller.clear();
-                setState(() {
-                  theBooking = Booking(
-                    bookingDate: DateTime(1970, 1, 1, 0, 0),
-                    gameSystem: "No game chosen",
-                    player1: "",
-                    player2: "");
-                });
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        ),
-      );
-    }*/
-  });
+    _firstNameController = TextEditingController(
+      text: user != null ? user.userFirstName : "",
+    );
+
+    _lastNameController = TextEditingController(
+      text: user != null ? user.userLastName : "",
+    );
+    firstName = _capitalise(_firstNameController.text);
+    lastName = _capitalise(_lastNameController.text);
+    makeNickname();
 
     // Start listening to changes.
     _firstNameController.addListener(_updateNames);
@@ -250,6 +234,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                             // Validate returns true if the form is valid, or false otherwise.
                             if (_formKey.currentState!.validate()) {
                               _updateNames();
+                              viewModel.deleteAllUsers();
                               viewModel.addUser(
                                 User(
                                   authId: "",

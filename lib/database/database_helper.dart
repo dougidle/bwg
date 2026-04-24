@@ -67,4 +67,11 @@ class DatabaseHelper {
 
     return result.map((json) => User.fromMap(json)).toList();
   }
+
+  Future<int> deleteAllUsers() async {
+    final db = await instance.database;
+    
+    // Deletes all rows and returns the number of rows affected
+    return await db.delete('loggedInUser');
+  }
 }

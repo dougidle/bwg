@@ -10,6 +10,7 @@ class DrawerViewModel extends ChangeNotifier {
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
   final userRepository = UserRepository.instance;
+  User? get theLoggedInUser => userRepository.currentUser;
 
   DrawerViewModel(this.firstName, this.lastName);
 
@@ -22,12 +23,16 @@ class DrawerViewModel extends ChangeNotifier {
     try {
       final id = await userRepository.insert(theNewUser);
       userRepository.setUser(theNewUser);
+      updateStatus(LoadStates.done);
+    } catch (e) {
+      errorMessage = e.toString();
+      updateStatus(LoadStates.error);
+    }
+  } 
 
-      final allUsers = await userRepository.getAll();
-
-      for (final d in allUsers) {
-        print('DRAWER: firstname=${d.userFirstName}, lastname=${d.userLastName}, nickname=${d.userNickName}');
-      }
+  Future<void> deleteAllUsers() async {
+    try {
+      await userRepository.deleteAllUsers();
       updateStatus(LoadStates.done);
     } catch (e) {
       errorMessage = e.toString();
