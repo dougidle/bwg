@@ -80,14 +80,18 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
 
     // Handle future updates
     viewModel.addListener(() {
-      final user = viewModel.theLoggedInUser;
+      if (mounted) {
+        setState(() {
+          final user = viewModel.theLoggedInUser;
 
-      if (user != null ) {
-        loginIcon = Icon(Icons.person);
-        loginIconColor = bwgGreen;
-      } else {
-        loginIcon = Icon(Icons.person_off);
-        loginIconColor = bwgRed;
+          if (user != null ) {
+            loginIcon = Icon(Icons.person);
+            loginIconColor = bwgGreen;
+          } else {
+            loginIcon = Icon(Icons.person_off);
+            loginIconColor = bwgRed;
+          }
+        });
       }
   });
 
