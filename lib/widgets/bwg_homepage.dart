@@ -122,7 +122,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     List<DayBookingTile> allDaysBookingsTileList = [];
     final theGroupedBookings = viewModel.groupBookingsByDate(theBookingsList);
     final sortedEntries = theGroupedBookings.entries.toList()
-      ..sort((a, b) => b.key.compareTo(a.key)); // descending
+      ..sort((a, b) => a.key.compareTo(b.key)); // ascending
 
     for (var entry in sortedEntries) {
       final key = entry.key.toIso8601String();
