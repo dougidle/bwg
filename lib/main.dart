@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'widgets/bwg_widgets.dart';
 import 'repositories/user_repository.dart';
+import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await UserRepository.instance.loadUser();
   runApp(const BWGApp());
 }

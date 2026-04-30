@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "89567207276",
+    "project_id": "muster-point-7ff84",
+    "storage_bucket": "muster-point-7ff84.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89567207276:android:202d9fa0e6d018033b1d49",
+        "android_client_info": {
+          "package_name": "com.dougidle.bwg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEmToEqVpSlaMFBCUK6UX9vC3jcP9vSGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89567207276:android:ecce4b40e1a1a1153b1d49",
+        "android_client_info": {
+          "package_name": "com.example.musterpoint"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEmToEqVpSlaMFBCUK6UX9vC3jcP9vSGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
