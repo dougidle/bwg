@@ -4,14 +4,14 @@ import 'booking.dart';
 import '../utilities/load_states.dart';
 import 'dart:convert';
 import '../repositories/user_repository.dart';
-import '../model/user.dart';
+import 'logged_in_user.dart';
 
 class BWGHomePageViewModel extends ChangeNotifier {
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
   final userRepository = UserRepository.instance;
-  User? get theLoggedInUser => userRepository.currentUser;
+  LoggedInUser? get theLoggedInUser => userRepository.currentUser;
 
   BWGHomePageViewModel() {
     userRepository.addListener(_onUserChanged);

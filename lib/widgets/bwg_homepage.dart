@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'bwg_widgets.dart';
 import '../model/booking.dart';
-import '../model/user.dart';
+import '../model/logged_in_user.dart';
 import '../utilities/load_states.dart';
 import '../model/bwg_homepage_viewmodel.dart';
 import '../widgets/usericon.dart';
@@ -23,7 +23,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   late AnimationController controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Booking> theBookingsList = [];
-  late User theLoggedInUser; 
+  late LoggedInUser theLoggedInUser; 
   Map<String, bool> expandedState = {};
   final viewModel = BWGHomePageViewModel();
   Color loginIconColor = bwgRed;

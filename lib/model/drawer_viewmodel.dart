@@ -1,4 +1,4 @@
-import 'package:bwg/model/user.dart';
+import 'package:bwg/model/logged_in_user.dart';
 import 'package:flutter/material.dart';
 import '../utilities/load_states.dart';
 import '../repositories/user_repository.dart';
@@ -10,7 +10,7 @@ class DrawerViewModel extends ChangeNotifier {
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
   final userRepository = UserRepository.instance;
-  User? get theLoggedInUser => userRepository.currentUser;
+  LoggedInUser? get theLoggedInUser => userRepository.currentUser;
 
   DrawerViewModel(this.firstName, this.lastName);
 
@@ -19,7 +19,7 @@ class DrawerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addUser(User theNewUser) async {
+  Future<void> addUser(LoggedInUser theNewUser) async {
     try {
       final id = await userRepository.insert(theNewUser);
       userRepository.setUser(theNewUser);

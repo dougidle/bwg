@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
 import '../model/drawer_viewmodel.dart';
-import '../model/user.dart';
+import '../model/logged_in_user.dart';
+
 
 class BWGDrawerMenu extends StatefulWidget {
   const BWGDrawerMenu({super.key});
@@ -236,7 +237,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                               _updateNames();
                               viewModel.deleteAllUsers();
                               viewModel.addUser(
-                                User(
+                                LoggedInUser(
                                   authId: "",
                                   userFirstName: firstName,
                                   userLastName: lastName,

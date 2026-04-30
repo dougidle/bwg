@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../model/user.dart';
+import '../model/logged_in_user.dart';
 
 class DatabaseHelper {
   // Singleton instance
@@ -50,7 +50,7 @@ class DatabaseHelper {
     db.close();
   }
 
-  Future<int> insertUser(User theUser) async {
+  Future<int> insertUser(LoggedInUser theUser) async {
     final db = await instance.database;
 
     return await db.insert(
@@ -60,12 +60,12 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<User>> getAllUsers() async {
+  Future<List<LoggedInUser>> getAllUsers() async {
     final db = await instance.database;
 
     final result = await db.query('loggedInUser');
 
-    return result.map((json) => User.fromMap(json)).toList();
+    return result.map((json) => LoggedInUser.fromMap(json)).toList();
   }
 
   Future<int> deleteAllUsers() async {

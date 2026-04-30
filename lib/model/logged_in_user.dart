@@ -1,11 +1,11 @@
-class User {
+class LoggedInUser {
   String authId = "";
   String userFirstName = "";
   String userLastName = "";
   String userNickName = "";
   String loginType = "";
 
-  User({
+  LoggedInUser({
     required this.authId,
     required this.userFirstName,
     required this.userLastName,
@@ -25,8 +25,8 @@ class User {
   }
 
   // Convert Map → Dog
-  factory User.fromMap(Map<String, Object?> map) {
-    return User(
+  factory LoggedInUser.fromMap(Map<String, Object?> map) {
+    return LoggedInUser(
       authId: map['authId'] as String,
       userFirstName: map['userFirstName'] as String,
       userLastName: map['userLastName'] as String,

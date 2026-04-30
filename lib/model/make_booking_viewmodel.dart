@@ -4,7 +4,7 @@ import 'booking.dart';
 import 'dart:io';
 import '../utilities/load_states.dart';
 import '../repositories/user_repository.dart';
-import '../model/user.dart';
+import 'logged_in_user.dart';
 
 class MakeBookingViewModel extends ChangeNotifier {
   //final MakeBookingViewModel theViewModel;
@@ -12,7 +12,7 @@ class MakeBookingViewModel extends ChangeNotifier {
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
-  User? get theLoggedInUser => userRepository.currentUser;
+  LoggedInUser? get theLoggedInUser => userRepository.currentUser;
   final userRepository = UserRepository.instance;
 
   MakeBookingViewModel(this.theBooking) {

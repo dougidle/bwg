@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../model/user.dart';
+import '../model/logged_in_user.dart';
 import '../database/database_helper.dart';
 
 class UserRepository extends ChangeNotifier {
@@ -8,12 +8,12 @@ class UserRepository extends ChangeNotifier {
 
   final dbHelper = DatabaseHelper.instance;
 
-  User? _currentUser;
+  LoggedInUser? _currentUser;
 
-  User? get currentUser => _currentUser;
+  LoggedInUser? get currentUser => _currentUser;
 
   // 🔹 Set user (e.g. after login)
-  void setUser(User user) {
+  void setUser(LoggedInUser user) {
     _currentUser = user;
     notifyListeners();
   }
@@ -29,18 +29,18 @@ class UserRepository extends ChangeNotifier {
   }
 
   // 🔹 Save user + set as current
-  Future<void> saveUser(User user) async {
+  Future<void> saveUser(LoggedInUser user) async {
     await dbHelper.insertUser(user);
     _currentUser = user;
     notifyListeners();
   }
 
   // 🔹 Existing methods (optional to keep)
-  Future<int> insert(User user) async {
+  Future<int> insert(LoggedInUser user) async {
     return await dbHelper.insertUser(user);
   }
 
-  Future<List<User>> getAll() async {
+  Future<List<LoggedInUser>> getAll() async {
     return await dbHelper.getAllUsers();
   }
 
