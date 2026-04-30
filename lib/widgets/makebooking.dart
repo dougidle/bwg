@@ -26,7 +26,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
 
   List<String> availableGameSystems = [
     "No game chosen",
-    "Warhammer 40,000"
+    "Warhammer 40,000",
     "Warhammer: Age of Sigmar",
     "Warhammer: The Old World",
     "Warhammer: Horus Heresy",
