@@ -27,7 +27,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   Map<String, bool> expandedState = {};
   final viewModel = BWGHomePageViewModel();
   Color loginIconColor = bwgRed;
-  Icon loginIcon = Icon(Icons.person_off);
+  Icon loginIcon = const Icon(Icons.person_off);
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -78,29 +78,26 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       loginIconColor = bwgGreen;
     }
 
-    // Handle future updates
-    viewModel.addListener(() {
-      if (mounted) {
-        setState(() {
-          final user = viewModel.theLoggedInUser;
-
-          if (user != null ) {
-            loginIcon = Icon(Icons.person);
-            loginIconColor = bwgGreen;
-          } else {
-            loginIcon = Icon(Icons.person_off);
-            loginIconColor = bwgRed;
-          }
-        });
-      }
-  });
-
-    // Start listening to changes.
-    //_player1Controller.addListener(_setPlayer1);
-    //_player2Controller.addListener(_setPlayer2);
+    viewModel.addListener(_onViewModelChange);
 
     controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
           ..repeat(reverse: false);
+  }
+
+  void _onViewModelChange() {
+    if (mounted) {
+      setState(() {
+        final user = viewModel.theLoggedInUser;
+
+        if (user != null) {
+          loginIcon = const Icon(Icons.person);
+          loginIconColor = bwgGreen;
+        } else {
+          loginIcon = const Icon(Icons.person_off);
+          loginIconColor = bwgRed;
+        }
+      });
+      }
   }
 
   @override
@@ -113,6 +110,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    viewModel.removeListener(_onViewModelChange);
     controller.dispose();
     super.dispose();
   }

@@ -71,9 +71,11 @@
 	<dict>
 		<key>CFBundleURLSchemes</key>
 		<array>
-		<string>com.dougidle.bwg</string>
+		<string>com.googleusercontent.apps.89567207276-nmsb0bilv2jr4d6kbkn3r2mmvc8cd6e2</string>
 		</array>
 	</dict>
 	</array>
+	<key>GIDClientID</key>
+	<string>89567207276-nmsb0bilv2jr4d6kbkn3r2mmvc8cd6e2.apps.googleusercontent.com</string>
 </dict>
 </plist>

@@ -32,7 +32,7 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.gms.client_id"
-            android:value="@string/default_web_client_id"/>
+            android:value="89567207276-5ppqejdr2aqrupjovq74g5ro3qvj70f2.apps.googleusercontent.com"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

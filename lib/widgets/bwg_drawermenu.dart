@@ -3,6 +3,10 @@ import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
 import '../model/drawer_viewmodel.dart';
 import '../model/logged_in_user.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../widgets/auth_screen.dart';
 
 
 class BWGDrawerMenu extends StatefulWidget {
@@ -266,7 +270,8 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                 )
               ],
             ),
-          )
+          ),
+          AuthScreen()
         ],
       ),
     );
