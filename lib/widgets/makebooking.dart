@@ -26,15 +26,15 @@ class _MakeBookingState extends State<MakeBookingTile> {
   bool _isExpanded = true;
   final formatter = DateFormat('d MMMM yyyy');
 
-  List<String> availableGameSystems = [
-    "No game chosen",
-    "Warhammer 40,000",
-    "Warhammer: Age of Sigmar",
-    "Warhammer: The Old World",
-    "Warhammer: Horus Heresy",
-    "Kill Team",
-    "Blood Bowl"
-  ];
+  Map<String, int> availableGameSystems = {
+  "No game chosen": 0,
+  "Warhammer 40,000": 2,
+  "Warhammer: Age of Sigmar": 2,
+  "Warhammer: The Old World": 2,
+  "Warhammer: Horus Heresy": 2,
+  "Kill Team": 1,
+  "Blood Bowl": 1,
+};
 
   bool _isValidBooking() {
     bool isValid = false;
@@ -297,7 +297,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   ),
                 ),
                 dropdownMenuEntries: [
-                  for (var gameSystem in availableGameSystems)
+                  for (var gameSystem in availableGameSystems.keys)
                     DropdownMenuEntry<String>(
                       value: gameSystem,
                       label: gameSystem,
@@ -306,6 +306,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 onSelected: (value) {
                   setState(() {
                     theBooking.gameSystem = value.toString();
+                    theBooking.requiredTables = availableGameSystems[value.toString()] ?? 1;
                   });
                 },
               ),
