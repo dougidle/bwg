@@ -20,6 +20,7 @@ class DayBookingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int tablesAvailable = 24;
     final formatter = DateFormat('d MMMM yyyy');
     String theFormattedDate = formatter.format(theDate);
 
@@ -31,8 +32,10 @@ class DayBookingTile extends StatelessWidget {
     }
 
     List<Widget> bookingsList = [];
+    int tablesUsed = 0;
 
     for (var i = 0; i < theBookings.length; i++) {
+      tablesUsed += theBookings[i].requiredTables;
       bookingsList.add(
         BookingTile(
           theBookings[i].player1, 
@@ -68,6 +71,19 @@ class DayBookingTile extends StatelessWidget {
                         onPressed: onToggle, 
                         icon: theIcon
                       ),
+                    ]
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '${tablesAvailable - tablesUsed} tables available',
+                        style: TextStyle(
+                          color: bwgDarkpurple,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0
+                        )
+                      ),
+                      Spacer(),
                     ]
                   ),
                   if (isExpanded) ...bookingsList,
