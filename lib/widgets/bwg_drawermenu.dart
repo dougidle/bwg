@@ -87,7 +87,10 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
             trailing: Icon(Icons.close),
             onTap: () => Navigator.pop(context),
           ),
-          Form(
+          AuthScreen(),
+          Card(
+            color: bwgLilac,
+            child: Form(
             key: _formKey,
             child: Column(
               children: <Widget>[
@@ -270,8 +273,8 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                 )
               ],
             ),
-          ),
-          AuthScreen()
+          )
+          )
         ],
       ),
     );
