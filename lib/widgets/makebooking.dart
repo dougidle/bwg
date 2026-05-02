@@ -19,8 +19,10 @@ class _MakeBookingState extends State<MakeBookingTile> {
     bookingDate: DateTime(1970, 1, 1, 0, 0),
     gameSystem: "No game chosen", 
     player1: "", 
-    player2: "");
-  final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: "No game chosen",player1: "",player2: ""));
+    player2: "",
+    isOrganised: false,
+    requiredTables: 0);
+  final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: "No game chosen",player1: "",player2: "", isOrganised: false, requiredTables: 0));
   bool _isExpanded = true;
   final formatter = DateFormat('d MMMM yyyy');
 
@@ -120,8 +122,10 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   theBooking = Booking(
                     bookingDate: DateTime(1970, 1, 1, 0, 0),
                     gameSystem: "No game chosen",
-                    player1: "",
-                    player2: "");
+                    player1: user!.userNickName,
+                    player2: "",
+                    isOrganised: false,
+                    requiredTables: 0);
                 });
               },
               child: const Text("OK"),
@@ -305,6 +309,38 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   });
                 },
               ),
+            ),
+          ),
+        ],
+      )
+    );
+
+    // isOrganised slider
+    theContentList.add(
+      Row(
+        children: [
+          Expanded(
+            flex: 5, 
+            child: Text(
+              'Organised Play?:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: bwgDarkpurple,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 5, 
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SwitchListTile(
+              value: theBooking.isOrganised,
+              onChanged: (bool value) {
+                setState(() {
+                  theBooking.isOrganised = !theBooking.isOrganised;
+                });
+              },
+            ),
             ),
           ),
         ],

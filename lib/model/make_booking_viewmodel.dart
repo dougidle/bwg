@@ -40,6 +40,9 @@ class MakeBookingViewModel extends ChangeNotifier {
           'player2': theBooking.player2,
           'gameSystem': theBooking.gameSystem,
           'theDate': theBooking.bookingDate.toIso8601String(),
+          // Convert bool to string and int to string for the POST body
+          'isOrganised': theBooking.isOrganised.toString(),
+          'requiredTables': theBooking.requiredTables.toString(),
         },
       );
       errorMessage = null;
