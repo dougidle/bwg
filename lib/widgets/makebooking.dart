@@ -315,6 +315,23 @@ class _MakeBookingState extends State<MakeBookingTile> {
         ],
       )
     );
+    // isOrganised slider
+    theContentList.add(
+    Row(
+      children: [
+        Expanded(
+          flex: 3, 
+          child: Text(
+            'The club has a limited number of tables and in extremely busy periods we will prioritise tables for organised events and subscribers.',
+            style: TextStyle(
+              fontWeight: FontWeight.normal,
+              color: bwgDarkpurple,
+            ),
+          ),
+        ),
+      ],
+    ),
+    );
 
     // isOrganised slider
     theContentList.add(
@@ -323,7 +340,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
           Expanded(
             flex: 5, 
             child: Text(
-              'Organised Play?:',
+              'Organised Play?',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: bwgDarkpurple,
