@@ -43,6 +43,7 @@ class DayBookingTile extends StatelessWidget {
           theBookings[i].player1, 
           theBookings[i].player2,
           theBookings[i].gameSystem,
+          theBookings[i].isOrganised,
           key: ValueKey('${theBookings[i].player1}-${theBookings[i].player2}-$i'),
         )
       );

@@ -338,9 +338,9 @@ class _MakeBookingState extends State<MakeBookingTile> {
       Row(
         children: [
           Expanded(
-            flex: 5, 
+            flex: 2, 
             child: Text(
-              'Organised Play?',
+              'League\nGame?',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: bwgDarkpurple,
@@ -348,17 +348,20 @@ class _MakeBookingState extends State<MakeBookingTile> {
             ),
           ),
           Expanded(
-            flex: 5, 
+            flex: 8, 
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SwitchListTile(
-              value: theBooking.isOrganised,
-              onChanged: (bool value) {
-                setState(() {
-                  theBooking.isOrganised = !theBooking.isOrganised;
-                });
-              },
-            ),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Switch(
+                  value: theBooking.isOrganised,
+                  onChanged: (bool value) {
+                    setState(() {
+                      theBooking.isOrganised = value;
+                    });
+                  },
+                ),
+              ),
             ),
           ),
         ],

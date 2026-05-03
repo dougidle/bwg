@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BookingTile extends StatelessWidget {
-  const BookingTile(this.player1, this.player2, this.gameSystem, {super.key});
+  const BookingTile(this.player1, this.player2, this.gameSystem, this.isOrganised, {super.key});
 
   final String player1;
   final String player2;
   final String gameSystem;
+  final bool isOrganised;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,19 @@ class BookingTile extends StatelessWidget {
               ]
             ) ,
           ),
+          if (isOrganised)
+            Padding(
+              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    "League Game",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Spacer()
+                ]
+              )
+            ),
           Padding(
             padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
             child: Row(
