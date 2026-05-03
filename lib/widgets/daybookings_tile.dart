@@ -20,7 +20,6 @@ class DayBookingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int tablesAvailable = 24;
     final formatter = DateFormat('d MMMM yyyy');
     String theFormattedDate = formatter.format(theDate);
     String theTableText = "";

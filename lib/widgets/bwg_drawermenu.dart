@@ -126,7 +126,8 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
         
         // Persist the user info so other widgets (like the Drawer) are updated
         await UserRepository.instance.saveUser(LoggedInUser(
-          authId: userCredential.user?.uid ?? "",
+          userId: -1,
+          authId: user!.uid,
           userFirstName: firstName,
           userLastName: lastName,
           userNickName: firstName.isNotEmpty ? "$firstName ${lastName.isNotEmpty ? lastName[0] : ''}" : "",
@@ -411,6 +412,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                       _updateNames();
                                   await viewModel.addUser(
                                         LoggedInUser(
+                                          userId: -1,
                                           authId: user!.uid,
                                           userFirstName: firstName,
                                           userLastName: lastName,
