@@ -23,6 +23,8 @@ class DayBookingTile extends StatelessWidget {
     final int tablesAvailable = 24;
     final formatter = DateFormat('d MMMM yyyy');
     String theFormattedDate = formatter.format(theDate);
+    String theTableText = "";
+    Color theTableColor = bwgDarkpurple;
 
     Icon theIcon;
     if (isExpanded) {
@@ -46,6 +48,21 @@ class DayBookingTile extends StatelessWidget {
       );
     }
 
+    switch (tablesUsed) {
+      case <=20:
+        theTableText = "${24 - tablesUsed} tables available";
+        theTableColor = bwgGreen;
+        break;
+      case >20 && <=24:
+        theTableText = "${24 - tablesUsed} tables available";
+        theTableColor = bwgOrange;
+        break;
+      default:
+        theTableText = "This club night is oversubscribed";
+        theTableColor = bwgRed;
+        break;
+    }
+
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Card(
@@ -57,33 +74,35 @@ class DayBookingTile extends StatelessWidget {
               child: Column(
                 children: [
                   Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        '$theFormattedDate - ${bookingsList.length} bookings',
-                        style: TextStyle(
-                          color: bwgDarkpurple,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0
-                        )
-                      ),
-                      Spacer(),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$theFormattedDate - ${bookingsList.length} bookings',
+                          style: TextStyle(
+                            color: bwgDarkpurple,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        Text(
+                          theTableText,
+                          style: TextStyle(
+                            color: theTableColor,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                       IconButton(
                         onPressed: onToggle, 
                         icon: theIcon
                       ),
-                    ]
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        '${tablesAvailable - tablesUsed} tables available',
-                        style: TextStyle(
-                          color: bwgDarkpurple,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 14.0
-                        )
-                      ),
-                      Spacer(),
                     ]
                   ),
                   if (isExpanded) ...bookingsList,
