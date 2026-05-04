@@ -15,6 +15,7 @@ class BWGHomePageViewModel extends ChangeNotifier {
 
   BWGHomePageViewModel() {
     userRepository.addListener(_onUserChanged);
+    _onUserChanged();
   }
 
   void _onUserChanged() {
@@ -55,6 +56,16 @@ class BWGHomePageViewModel extends ChangeNotifier {
 
   void updateStatus(LoadStates theNewStatus) {
     theStatus = theNewStatus;
+    notifyListeners();
+  }
+
+  Future<void> addUser(LoggedInUser user) async {
+    await userRepository.saveUser(user);
+    notifyListeners();
+  }
+
+  Future<void> deleteAllUsers() async {
+    await userRepository.deleteAllUsers();
     notifyListeners();
   }
 }

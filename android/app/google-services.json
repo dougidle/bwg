@@ -12,7 +12,36 @@
           "package_name": "com.dougidle.bwg"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "89567207276-16aheb38qpl157laa1gujo4glfg958md.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dougidle.bwg",
+            "certificate_hash": "37ac7f4739ac663974e76d6d500e957ea421208e"
+          }
+        },
+        {
+          "client_id": "89567207276-admv3cacr1eojn13dldhleabppc01jp8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dougidle.bwg",
+            "certificate_hash": "61c151a500cffb93e19895c1bc97fa0cb8c8e707"
+          }
+        },
+        {
+          "client_id": "89567207276-crs0lmfe5i8thv8tgbp95pvbaitc2ga6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dougidle.bwg",
+            "certificate_hash": "09e8a4b895a2de3fb61e746e1527f10f6aae4f10"
+          }
+        },
+        {
+          "client_id": "89567207276-5ppqejdr2aqrupjovq74g5ro3qvj70f2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDEmToEqVpSlaMFBCUK6UX9vC3jcP9vSGQ"
@@ -20,26 +49,20 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:89567207276:android:ecce4b40e1a1a1153b1d49",
-        "android_client_info": {
-          "package_name": "com.example.musterpoint"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDEmToEqVpSlaMFBCUK6UX9vC3jcP9vSGQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "89567207276-5ppqejdr2aqrupjovq74g5ro3qvj70f2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "89567207276-nmsb0bilv2jr4d6kbkn3r2mmvc8cd6e2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dougidle.bwg",
+                "app_store_id": "6761006413"
+              }
+            }
+          ]
         }
       }
     }

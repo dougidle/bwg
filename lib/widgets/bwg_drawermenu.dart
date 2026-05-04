@@ -112,32 +112,44 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
         idToken: googleAuth.idToken,
       );
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser == null) {
+        throw Exception("Firebase sign-in failed: User is null");
+      }
 
       final idToken = googleAuth.idToken;
       final idMap = parseJwt(idToken);
 
       if (idMap != null) {
-        final String firstName = idMap["given_name"] ?? "";
-        final String lastName = idMap["family_name"] ?? "";
+        final String fName = idMap["given_name"] ?? "";
+        final String lName = idMap["family_name"] ?? "";
 
-        _firstNameController.text = firstName;
-        _lastNameController.text = lastName;
-        makeNickname();
+        _firstNameController.text = fName;
+        _lastNameController.text = lName;
+        
+        String nick = fName.isNotEmpty ? "$fName ${lName.isNotEmpty ? lName[0] : ''}" : "";
         
         // Persist the user info so other widgets (like the Drawer) are updated
-        await UserRepository.instance.saveUser(LoggedInUser(
+        final newUser = LoggedInUser(
           userId: -1,
-          authId: user!.uid,
-          userFirstName: firstName,
-          userLastName: lastName,
-          userNickName: firstName.isNotEmpty ? "$firstName ${lastName.isNotEmpty ? lastName[0] : ''}" : "",
+          authId: firebaseUser.uid,
+          userFirstName: fName,
+          userLastName: lName,
+          userNickName: nick,
           loginType: "Google",
-        ));
-      }
+        );
+        await UserRepository.instance.saveUser(newUser);
 
-      setState(() => user = userCredential.user);
+      }
+      setState(() => user = firebaseUser);
     } catch (e) {
-      debugPrint("Sign-in error: $e");
+      debugPrint("Google Sign-In Error: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Sign-in failed. Please check your internet and Google Play configuration. Error: $e")),
+        );
+      }
     }
   }
 
@@ -410,16 +422,16 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                     // Validate returns true if the form is valid, or false otherwise.
                                 if (_formKey.currentState!.validate() && user != null) {
                                       _updateNames();
-                                  await viewModel.addUser(
-                                        LoggedInUser(
-                                          userId: -1,
-                                          authId: user!.uid,
-                                          userFirstName: firstName,
-                                          userLastName: lastName,
-                                          userNickName: nickname,
-                                      loginType: "Google"
-                                        )
-                                      );
+                                  final updatedUser = LoggedInUser(
+                                    userId: viewModel.theLoggedInUser?.userId ?? -1,
+                                    authId: user!.uid,
+                                    userFirstName: firstName,
+                                    userLastName: lastName,
+                                    userNickName: nickname,
+                                    loginType: "Google",
+                                  );
+                                  
+                                  await viewModel.addUser(updatedUser);
                                   if (mounted) Navigator.pop(context);
                                     }
                                 },

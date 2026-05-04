@@ -3,6 +3,7 @@ import 'widgets/bwg_widgets.dart';
 import 'repositories/user_repository.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,11 +39,18 @@ class BWGApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         useMaterial3: true,
-        colorScheme: .fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-      home: const BWGHomePage(title: 'Barming Wargamers'),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          }
+          // The StreamBuilder ensures we rebuild when the Firebase User changes.
+          return const BWGHomePage(title: 'Barming Wargamers');
+        },
+      ),
     );
   }
 }
-
-
