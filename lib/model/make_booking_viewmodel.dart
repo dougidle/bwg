@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'booking.dart';
+import 'table_booking.dart';
 import 'dart:io';
 import '../utilities/load_states.dart';
 import '../repositories/user_repository.dart';
@@ -8,7 +8,7 @@ import 'logged_in_user.dart';
 
 class MakeBookingViewModel extends ChangeNotifier {
   //final MakeBookingViewModel theViewModel;
-  Booking theBooking;
+  TableBooking theBooking;
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
@@ -23,7 +23,7 @@ class MakeBookingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createBooking(Booking theBookingToMake) async {
+  Future<void> createBooking(TableBooking theBookingToMake) async {
     theBooking = theBookingToMake;
     final url = Uri.parse(
       'https://musterpointapp.com/api/createGameBooking.php',

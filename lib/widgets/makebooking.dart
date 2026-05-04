@@ -1,6 +1,6 @@
 import 'package:bwg/utilities/load_states.dart';
 import 'package:flutter/material.dart';
-import '../model/booking.dart';
+import '../model/table_booking.dart';
 import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
 import '../model/make_booking_viewmodel.dart';
@@ -17,14 +17,14 @@ class MakeBookingTile extends StatefulWidget {
 class _MakeBookingState extends State<MakeBookingTile> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
-  Booking theBooking = Booking(
+  TableBooking theBooking = TableBooking(
     bookingDate: DateTime(1970, 1, 1, 0, 0),
     gameSystem: 'No game chosen', 
     player1: '', 
     player2: '',
     isOrganised: false,
     requiredTables: 0);
-  final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: 'No game chosen',player1: '',player2: '', isOrganised: false, requiredTables: 0));
+  final viewModel = MakeBookingViewModel(TableBooking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: 'No game chosen',player1: '',player2: '', isOrganised: false, requiredTables: 0));
   bool _isExpanded = true;
   final formatter = DateFormat('d MMMM yyyy');
 
@@ -126,7 +126,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 _player1Controller.clear();
                 _player2Controller.clear();
                 setState(() {
-                  theBooking = Booking(
+                  theBooking = TableBooking(
                     bookingDate: DateTime(1970, 1, 1, 0, 0),
                     gameSystem: 'No game chosen',
                     player1: user!.userNickName,

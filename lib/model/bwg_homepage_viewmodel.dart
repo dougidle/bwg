@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'booking.dart';
+import 'table_booking.dart';
 import '../utilities/load_states.dart';
 import 'dart:convert';
 import '../repositories/user_repository.dart';
@@ -23,7 +23,7 @@ class BWGHomePageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Booking>> fetchBookings() async {
+  Future<List<TableBooking>> fetchBookings() async {
     final pastDate = DateTime.now().toUtc().subtract(const Duration(days: 1));
     final url = Uri.parse(
       'https://musterpointapp.com/api/getTableBookingsFromDate.php?date=$pastDate',
@@ -34,7 +34,7 @@ class BWGHomePageViewModel extends ChangeNotifier {
     if (response.statusCode == 200) {
       final List<dynamic> decoded = jsonDecode(response.body);
 
-      return BookingParser.parseBookings(decoded);
+      return TableBookingParser.parseBookings(decoded);
     } else {
       throw Exception('Failed to load bookings: ${response.statusCode}');
     }
@@ -55,8 +55,8 @@ class BWGHomePageViewModel extends ChangeNotifier {
     }
   }
 
-  Map<DateTime, List<Booking>> groupBookingsByDate(List<Booking> bookings) {
-    final Map<DateTime, List<Booking>> grouped = {};
+  Map<DateTime, List<TableBooking>> groupBookingsByDate(List<TableBooking> bookings) {
+    final Map<DateTime, List<TableBooking>> grouped = {};
 
     for (var booking in bookings) {
       // Normalize to just the date (remove time)

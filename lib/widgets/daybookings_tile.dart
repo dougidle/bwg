@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'bwg_widgets.dart';
-import '../model/booking.dart';
+import '../model/table_booking.dart';
 import '../resources/bwg_colors.dart';
 
 class DayBookingTile extends StatelessWidget {
@@ -14,7 +14,7 @@ class DayBookingTile extends StatelessWidget {
   });
 
   final DateTime theDate;
-  final List<Booking> theBookings;
+  final List<TableBooking> theBookings;
   final bool isExpanded;
   final VoidCallback onToggle;
 

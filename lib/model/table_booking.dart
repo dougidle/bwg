@@ -1,4 +1,4 @@
-class Booking {
+class TableBooking {
   DateTime bookingDate;
   String gameSystem;
   String player1;
@@ -6,7 +6,7 @@ class Booking {
   bool isOrganised;
   int requiredTables;
 
-  Booking({
+  TableBooking({
     required this.bookingDate,
     required this.gameSystem,
     required this.player1,
@@ -15,8 +15,8 @@ class Booking {
     required this.requiredTables,
   });
 
-  factory Booking.fromJson(Map<String, dynamic> json) {
-    return Booking(
+  factory TableBooking.fromJson(Map<String, dynamic> json) {
+    return TableBooking(
       bookingDate: DateTime.parse(json['BookingDate']),
       gameSystem: json['GameSystem'] as String,
       player1: json['Player1'] as String,
@@ -28,10 +28,10 @@ class Booking {
 
 }
 
-class BookingParser {
-  static List<Booking> parseBookings(List<dynamic> jsonList) {
+class TableBookingParser {
+  static List<TableBooking> parseBookings(List<dynamic> jsonList) {
     return jsonList
-        .map((json) => Booking.fromJson(json as Map<String, dynamic>))
+        .map((json) => TableBooking.fromJson(json as Map<String, dynamic>))
         .toList();
   }
 }

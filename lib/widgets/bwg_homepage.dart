@@ -2,7 +2,7 @@ import 'package:bwg/resources/bwg_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'bwg_widgets.dart';
-import '../model/booking.dart';
+import '../model/table_booking.dart';
 import '../model/gamer.dart';
 import '../model/logged_in_user.dart';
 import '../utilities/load_states.dart';
@@ -23,7 +23,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Booking> theBookingsList = [];
+  List<TableBooking> theBookingsList = [];
   List<Gamer> theGamersList = [];
   late LoggedInUser theLoggedInUser; 
   Map<String, bool> expandedState = {};
@@ -62,7 +62,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       ]);
 
       setState(() {
-        theBookingsList = results[0] as List<Booking>;
+        theBookingsList = results[0] as List<TableBooking>;
         theGamersList = results[1] as List<Gamer>;
         _loadState = LoadStates.done;
       });
