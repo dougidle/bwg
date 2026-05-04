@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DrawerViewModel extends ChangeNotifier {
-  String firstName = ""; 
-  String lastName = "";
+  String firstName = ''; 
+  String lastName = '';
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
@@ -27,7 +27,7 @@ class DrawerViewModel extends ChangeNotifier {
     try {
       // 1. Call the API to Get or Create the User in the MySQL DB
       final response = await http.post(
-        Uri.parse("https://musterpointapp.com/api/createNewUser.php"),
+        Uri.parse('https://musterpointapp.com/api/createNewUser.php'),
         body: {
           'AuthId': theNewUser.authId,
           'NickName': theNewUser.userNickName
@@ -52,7 +52,7 @@ class DrawerViewModel extends ChangeNotifier {
           throw Exception(data['message']);
         }
       } else {
-        throw Exception("Server error: ${response.statusCode}");
+        throw Exception('Server error: ${response.statusCode}');
       }
     } catch (e) {
       errorMessage = e.toString();

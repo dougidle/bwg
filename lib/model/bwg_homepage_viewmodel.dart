@@ -5,6 +5,7 @@ import '../utilities/load_states.dart';
 import 'dart:convert';
 import '../repositories/user_repository.dart';
 import 'logged_in_user.dart';
+import '../model/gamer.dart';
 
 class BWGHomePageViewModel extends ChangeNotifier {
   String? errorMessage;
@@ -36,6 +37,21 @@ class BWGHomePageViewModel extends ChangeNotifier {
       return BookingParser.parseBookings(decoded);
     } else {
       throw Exception('Failed to load bookings: ${response.statusCode}');
+    }
+  }
+
+  Future<List<Gamer>> fetchGamers() async {
+    final url = Uri.parse(
+      'https://musterpointapp.com/api/getGamers.php',
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+      return GamerParser.parseGamers(decodedResponse);
+    } else {
+      throw Exception('Failed to load gamers: ${response.statusCode}');
     }
   }
 

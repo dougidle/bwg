@@ -1,10 +1,10 @@
 class LoggedInUser {
   int userId = -1;
-  String authId = "";
-  String userFirstName = "";
-  String userLastName = "";
-  String userNickName = "";
-  String loginType = "";
+  String authId = '';
+  String userFirstName = '';
+  String userLastName = '';
+  String userNickName = '';
+  String loginType = '';
 
   LoggedInUser({
     required this.userId,

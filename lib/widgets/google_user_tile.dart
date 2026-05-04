@@ -16,7 +16,7 @@ class GoogleUserTile extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(8.0),
               child: CircleAvatar(
-                    backgroundImage: NetworkImage(theUser!.photoURL ?? ""),
+                    backgroundImage: NetworkImage(theUser!.photoURL ?? ''),
                     radius: 40,
               )
             ),
@@ -27,7 +27,7 @@ class GoogleUserTile extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
               child: Text(
-                "${theUser!.displayName}",
+                '${theUser!.displayName}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: bwgDarkpurple,
@@ -37,7 +37,7 @@ class GoogleUserTile extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
               child: Text(
-                "Logged in via Google",
+                'Logged in via Google',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: bwgDarkpurple,

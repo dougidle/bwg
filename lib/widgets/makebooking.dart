@@ -4,9 +4,11 @@ import '../model/booking.dart';
 import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
 import '../model/make_booking_viewmodel.dart';
+import '../model/gamer.dart';
 
 class MakeBookingTile extends StatefulWidget {
-  const MakeBookingTile({super.key});
+  final List<Gamer> theGamersList;
+  const MakeBookingTile({super.key, required this.theGamersList});
 
   @override
   State<MakeBookingTile> createState() => _MakeBookingState();
@@ -17,29 +19,34 @@ class _MakeBookingState extends State<MakeBookingTile> {
   final TextEditingController _player2Controller = TextEditingController();
   Booking theBooking = Booking(
     bookingDate: DateTime(1970, 1, 1, 0, 0),
-    gameSystem: "No game chosen", 
-    player1: "", 
-    player2: "",
+    gameSystem: 'No game chosen', 
+    player1: '', 
+    player2: '',
     isOrganised: false,
     requiredTables: 0);
-  final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: "No game chosen",player1: "",player2: "", isOrganised: false, requiredTables: 0));
+  final viewModel = MakeBookingViewModel(Booking(bookingDate: DateTime(1970, 1, 1, 0, 0),gameSystem: 'No game chosen',player1: '',player2: '', isOrganised: false, requiredTables: 0));
   bool _isExpanded = true;
   final formatter = DateFormat('d MMMM yyyy');
 
   Map<String, int> availableGameSystems = {
-  "No game chosen": 0,
-  "Warhammer 40,000": 2,
-  "Warhammer: Age of Sigmar": 2,
-  "Warhammer: The Old World": 2,
-  "Warhammer: Horus Heresy": 2,
-  "Kill Team": 1,
-  "Blood Bowl": 1,
+  'No game chosen': 0,
+  'Warhammer 40,000': 2,
+  'Warhammer: Age of Sigmar': 2,
+  'Warhammer: The Old World': 2,
+  'Warhammer: Horus Heresy': 2,
+  'Kill Team': 1,
+  'Blood Bowl': 1,
 };
 
   bool _isValidBooking() {
     bool isValid = false;
 
-    if (theBooking.player1 != "" && theBooking.player2 !="" && theBooking.gameSystem != "No game chosen" && theBooking.bookingDate != DateTime(1970, 1, 1, 0, 0)) {
+    if (theBooking.player1 != '' &&
+        theBooking.player2 != '' &&
+        theBooking.player2 != 'Other' &&
+        theBooking.player2 != 'No Opponent selected' &&
+        theBooking.gameSystem != 'No game chosen' &&
+        theBooking.bookingDate != DateTime(1970, 1, 1, 0, 0)) {
       isValid = true;
     }
     return isValid;
@@ -109,8 +116,8 @@ class _MakeBookingState extends State<MakeBookingTile> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text("Barming Wargamers"),
-          content: Text("Your booking between ${theBooking.player1} and ${theBooking.player2} to play ${theBooking.gameSystem} on ${formatter.format(theBooking.bookingDate)} has been received."),
+          title: const Text('Barming Wargamers'),
+          content: Text('Your booking between ${theBooking.player1} and ${theBooking.player2} to play ${theBooking.gameSystem} on ${formatter.format(theBooking.bookingDate)} has been received.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -121,14 +128,14 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 setState(() {
                   theBooking = Booking(
                     bookingDate: DateTime(1970, 1, 1, 0, 0),
-                    gameSystem: "No game chosen",
+                    gameSystem: 'No game chosen',
                     player1: user!.userNickName,
-                    player2: "",
+                    player2: '',
                     isOrganised: false,
                     requiredTables: 0);
                 });
               },
-              child: const Text("OK"),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -197,7 +204,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: "None set",
+                  hintText: 'None set',
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                     borderRadius: BorderRadius.circular(12),                  
@@ -220,7 +227,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
       ),
     );
 
-    // Player 2
+    // Player2 dropdown
     theContentList.add(
       Row(
         children: [
@@ -238,27 +245,95 @@ class _MakeBookingState extends State<MakeBookingTile> {
             flex: 8, 
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
+              child: DropdownMenu<String>(
+                initialSelection: 'No Opponent selected',
+                expandedInsets: EdgeInsets.zero,
+                inputDecorationTheme: InputDecorationTheme(
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: "Your opponent",
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: bwgDarkpurple, width: 1),
-                    borderRadius: BorderRadius.circular(12),                  
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: bwgDarkpurple, width: 1),
-                    borderRadius: BorderRadius.circular(12),                       
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                controller: _player2Controller, 
+                dropdownMenuEntries: [
+                  DropdownMenuEntry<String>(
+                    value: 'No Opponent selected',
+                    label: 'No Opponent selected',
+                  ),
+                  for (var theOpponent in widget.theGamersList/*.where((g) => g.userId != theBooking.userId)*/)
+                    DropdownMenuEntry<String>(
+                      value: theOpponent.nickName,
+                      label: theOpponent.nickName,
+                    ),
+                  DropdownMenuEntry<String>(
+                    value: 'Other',
+                    label: 'Other',
+                  ),
+                ],
+                onSelected: (value) {
+                  setState(() {
+                    theBooking.player2 = value.toString();
+                    if (value != 'Other') {
+                      _player2Controller.clear();
+                    }
+                  });
+                },
               ),
             ),
           ),
         ],
       )
     );
+
+    // Player 2
+    if (theBooking.player2 == 'Other' || _player2Controller.text.isNotEmpty) {
+      theContentList.add(
+        Row(
+          children: [
+            Expanded(
+              flex: 2, 
+              child: Text(
+                '',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: bwgDarkpurple,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 8, 
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Your opponent',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                      borderRadius: BorderRadius.circular(12),                  
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: bwgDarkpurple, width: 1),
+                      borderRadius: BorderRadius.circular(12),                       
+                    ),
+                  ),
+                  controller: _player2Controller, 
+                ),
+              ),
+            ),
+          ],
+        )
+      );
+    }
 
     // Gamesystem dropdown
     theContentList.add(
@@ -315,6 +390,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
         ],
       )
     );
+
     // isOrganised slider
     theContentList.add(
     Row(
@@ -407,7 +483,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 dropdownMenuEntries: [
                   DropdownMenuEntry(
                     value: DateTime(1970, 1, 1, 0, 0), 
-                    label: "No date chosen"
+                    label: 'No date chosen'
                     ),
                   for (var gameDay in gameDays)
                     DropdownMenuEntry<DateTime>(
@@ -443,7 +519,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   disabledBackgroundColor: bwgRed
                 ),
                 child: Text(
-                  "Book my game",
+                  'Book my game',
                    style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold

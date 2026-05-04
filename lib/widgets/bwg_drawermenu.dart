@@ -19,11 +19,11 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
   late TextEditingController _firstNameController = TextEditingController();
   late TextEditingController _lastNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String firstName = "";
-  String lastName = "";
-  String nickname = "";
+  String firstName = '';
+  String lastName = '';
+  String nickname = '';
   Color iconColor = bwgRed;
-  final viewModel = DrawerViewModel("","");
+  final viewModel = DrawerViewModel('','');
   final formatter = DateFormat('d MMMM yyyy');
   User? user;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -115,20 +115,20 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
       final firebaseUser = userCredential.user;
 
       if (firebaseUser == null) {
-        throw Exception("Firebase sign-in failed: User is null");
+        throw Exception('Firebase sign-in failed: User is null');
       }
 
       final idToken = googleAuth.idToken;
       final idMap = parseJwt(idToken);
 
       if (idMap != null) {
-        final String fName = idMap["given_name"] ?? "";
-        final String lName = idMap["family_name"] ?? "";
+        final String fName = idMap['given_name'] ?? '';
+        final String lName = idMap['family_name'] ?? '';
 
         _firstNameController.text = fName;
         _lastNameController.text = lName;
         
-        String nick = fName.isNotEmpty ? "$fName ${lName.isNotEmpty ? lName[0] : ''}" : "";
+        String nick = fName.isNotEmpty ? "$fName ${lName.isNotEmpty ? lName[0] : ''}" : '';
         
         // Persist the user info so other widgets (like the Drawer) are updated
         final newUser = LoggedInUser(
@@ -137,17 +137,17 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
           userFirstName: fName,
           userLastName: lName,
           userNickName: nick,
-          loginType: "Google",
+          loginType: 'Google',
         );
         await UserRepository.instance.saveUser(newUser);
 
       }
       setState(() => user = firebaseUser);
     } catch (e) {
-      debugPrint("Google Sign-In Error: $e");
+      debugPrint('Google Sign-In Error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Sign-in failed. Please check your internet and Google Play configuration. Error: $e")),
+          SnackBar(content: Text('Sign-in failed. Please check your internet and Google Play configuration. Error: $e')),
         );
       }
     }
@@ -161,11 +161,11 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
 
   void makeNickname() {
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
-        nickname = "$firstName ${lastName[0]}";
+        nickname = '$firstName ${lastName[0]}';
       } else if (firstName.isNotEmpty) {
         nickname = firstName;
       } else {
-        nickname = "";
+        nickname = '';
       }
   }
 
@@ -183,7 +183,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
   }
 
   String _capitalise(String value) {
-    if (value.isEmpty) return "";
+    if (value.isEmpty) return '';
     return value[0].toUpperCase() + value.substring(1).toLowerCase();
   }
 
@@ -195,11 +195,11 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
     final loggedInUser = viewModel.theLoggedInUser;
 
     _firstNameController = TextEditingController(
-      text: loggedInUser != null ? loggedInUser.userFirstName : "",
+      text: loggedInUser != null ? loggedInUser.userFirstName : '',
     );
 
     _lastNameController = TextEditingController(
-      text: loggedInUser != null ? loggedInUser.userLastName : "",
+      text: loggedInUser != null ? loggedInUser.userLastName : '',
     );
     firstName = _capitalise(_firstNameController.text);
     lastName = _capitalise(_lastNameController.text);
@@ -294,7 +294,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintText: "Your first name",
+                                    hintText: 'Your first name',
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                                       borderRadius: BorderRadius.circular(12),                  
@@ -336,7 +336,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintText: "Your last name",
+                                    hintText: 'Your last name',
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                                       borderRadius: BorderRadius.circular(12),                  
@@ -392,7 +392,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintText: "None set",
+                                    hintText: 'None set',
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(color: bwgDarkpurple, width: 1),
                                       borderRadius: BorderRadius.circular(12),                  
@@ -428,7 +428,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                     userFirstName: firstName,
                                     userLastName: lastName,
                                     userNickName: nickname,
-                                    loginType: "Google",
+                                    loginType: 'Google',
                                   );
                                   
                                   await viewModel.addUser(updatedUser);
@@ -440,7 +440,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                   disabledBackgroundColor: bwgRed
                                 ),
                                 child: Text(
-                                  "Save my details",
+                                  'Save my details',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold
@@ -468,7 +468,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                           backgroundColor: bwgOrange
                         ),
                         child: Text(
-                          "Logout and delete my account",
+                          'Logout and delete my account',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold

@@ -22,7 +22,7 @@ class DayBookingTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final formatter = DateFormat('d MMMM yyyy');
     String theFormattedDate = formatter.format(theDate);
-    String theTableText = "";
+    String theTableText = '';
     Color theTableColor = bwgDarkpurple;
 
     Icon theIcon;
@@ -50,15 +50,15 @@ class DayBookingTile extends StatelessWidget {
 
     switch (tablesUsed) {
       case <=20:
-        theTableText = "${24 - tablesUsed} tables available";
+        theTableText = '${24 - tablesUsed} tables available';
         theTableColor = bwgGreen;
         break;
       case >20 && <=24:
-        theTableText = "${24 - tablesUsed} tables available";
+        theTableText = '${24 - tablesUsed} tables available';
         theTableColor = bwgOrange;
         break;
       default:
-        theTableText = "This club night is oversubscribed";
+        theTableText = 'This club night is oversubscribed';
         theTableColor = bwgRed;
         break;
     }

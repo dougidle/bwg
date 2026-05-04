@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'bwg_widgets.dart';
 import '../model/booking.dart';
+import '../model/gamer.dart';
 import '../model/logged_in_user.dart';
 import '../utilities/load_states.dart';
 import '../model/bwg_homepage_viewmodel.dart';
@@ -23,6 +24,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   late AnimationController controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Booking> theBookingsList = [];
+  List<Gamer> theGamersList = [];
   late LoggedInUser theLoggedInUser; 
   Map<String, bool> expandedState = {};
   final viewModel = BWGHomePageViewModel();
@@ -45,21 +47,31 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     });
   }
   
-  void _loadBookings() async {
+  Future<void> _refreshAllData() async {
     if (_loadState == LoadStates.loading) return;
 
     setState(() {
-    _loadState = LoadStates.loading;
+      _loadState = LoadStates.loading;
     });
+
     try {
-      final bookings = await viewModel.fetchBookings();
+      // Fetch both Bookings and Gamers in parallel for better performance
+      final results = await Future.wait([
+        viewModel.fetchBookings(),
+        viewModel.fetchGamers(),
+      ]);
+
       setState(() {
-        theBookingsList = bookings;
+        theBookingsList = results[0] as List<Booking>;
+        theGamersList = results[1] as List<Gamer>;
         _loadState = LoadStates.done;
       });
-    } catch (_) {
+
+      debugPrint('Successfully loaded ${theGamersList.length} gamers and ${theBookingsList.length} bookings.');
+    } catch (e) {
+      debugPrint('Error refreshing data: $e');
       setState(() {
-      _loadState = LoadStates.error;
+        _loadState = LoadStates.error;
       });
     }
   }
@@ -69,7 +81,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initPackageInfo();
-    _loadBookings();
+    _refreshAllData();
 
     // Handle initial value (already loaded from DB)
     final user = viewModel.theLoggedInUser;
@@ -103,7 +115,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _loadBookings();
+      _refreshAllData();
     }
   }
 
@@ -140,10 +152,10 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     }
   
     Widget theIcon;
-    if (_loadState == LoadStates.loading) {
+    if (_loadState == LoadStates.error) {
       theIcon = Padding(
         padding: EdgeInsets.all(8.0),
-        child: Icon(Icons.warning_rounded)
+        child: Icon(Icons.warning_rounded, color: bwgRed)
       );
     } else {
       theIcon = Padding(
@@ -187,7 +199,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       theRefreshIcon = theProgressIndicator;
     } else {
       theRefreshIcon = IconButton(
-          onPressed: _loadBookings, 
+          onPressed: _refreshAllData, 
           icon: theIcon
         );
     }
@@ -204,14 +216,14 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
             showDialog(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: const Text("Barming Wargamers"),
-                content: Text("Version: ${_packageInfo.version}\nBuild: ${_packageInfo.buildNumber}"),
+                title: const Text('Barming Wargamers'),
+                content: Text('Version: ${_packageInfo.version}\nBuild: ${_packageInfo.buildNumber}'),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
                       Navigator.of(ctx).pop();
                     },
-                    child: const Text("OK"),
+                    child: const Text('OK'),
                   ),
                 ],
               ),
@@ -238,9 +250,9 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
           children: <Widget>[
             if (viewModel.theLoggedInUser == null) 
              ContentCard(
-              "Please login using the icon top right before you use the app."
+              'Please login using the icon top right before you use the app.'
             ) else ...[
-              MakeBookingTile(),
+              MakeBookingTile(theGamersList: theGamersList),
               ...allDaysBookingsTileList
             ] 
           ] 

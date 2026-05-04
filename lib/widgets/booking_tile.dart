@@ -22,7 +22,7 @@ class BookingTile extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
-                Text("vs."),
+                Text('vs.'),
                 Spacer(),
                 Text(
                   player2,
@@ -37,7 +37,7 @@ class BookingTile extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   Text(
-                    "League Game",
+                    'League Game',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Spacer()
