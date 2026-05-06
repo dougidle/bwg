@@ -43,6 +43,7 @@ class DrawerViewModel extends ChangeNotifier {
           theNewUser.userId = returnedId; 
 
           // 3. Now write the updated user to your local repository
+          await userRepository.deleteAllUsers();
           await userRepository.insert(theNewUser);
           userRepository.setUser(theNewUser);
           

@@ -17,6 +17,8 @@ class MakeBookingTile extends StatefulWidget {
 class _MakeBookingState extends State<MakeBookingTile> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
+  final TextEditingController _player2SearchController = TextEditingController();
+  late VoidCallback _viewModelListener; // Declare the listener
   final viewModel = MakeBookingViewModel(
     GameBooking(
       player1: -1,
@@ -106,7 +108,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
       theBooking.player1 = user.userId;
     }
 
-    // Handle future updates
+    // 1. ViewModel Listener: Handles user login/status changes
     viewModel.addListener(() {
       final user = viewModel.theLoggedInUser;
       if (mounted && user != null) {
@@ -114,54 +116,55 @@ class _MakeBookingState extends State<MakeBookingTile> {
           _player1Controller.text = user.userNickName;
           theBooking.player1 = user.userId;
         });
-    }
-    
-    if (viewModel.theStatus == LoadStates.done) {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Barming Wargamers'),
-          content: Text('Your booking between ${theBooking.player1} and ${theBooking.player2} to play ${theBooking.gameSystem} on ${formatter.format(theBooking.bookingDate)} has been received.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                viewModel.updateStatus(LoadStates.editing);
-                _player1Controller.clear();
-                _player2Controller.clear();
-                setState(() {
-                  final currentUser = viewModel.theLoggedInUser;
-                  theBooking = GameBooking(
-                    player1: currentUser?.userId ?? -1,
-                    player2: 0, // Reset to 'No Opponent selected' (ID 0)
-                    bookingDate: DateTime(1970, 1, 1, 0, 0),
-                    gameSystem: 'No game chosen',
-                    isOrganised: false,
-                    requiredTables: 0,
-                    player2Name: '');
-                  
-                  // Sync the controller text for the next booking
-                  if (currentUser != null) {
-                    _player1Controller.text = currentUser.userNickName;
-                  }
-                });
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  });
+      }
 
-    // Start listening to changes.
+      if (viewModel.theStatus == LoadStates.done && mounted) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Barming Wargamers'),
+            content: const Text('Your booking has been received.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  viewModel.updateStatus(LoadStates.editing);
+                  _player2SearchController.clear();
+                  _player2Controller.clear();
+                  setState(() {
+                    theBooking.player2 = 0;
+                    theBooking.player2Name = '';
+                    theBooking.gameSystem = 'No game chosen';
+                    theBooking.bookingDate = DateTime(1970, 1, 1, 0, 0);
+                  });
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+
+    // 2. Search Listener: Handles logic for the predictive text box
+    _player2SearchController.addListener(() {
+      if (mounted) {
+        setState(() {
+          // Reset selection if the user clears the search box
+          if (_player2SearchController.text.isEmpty && theBooking.player2 != 0) {
+            theBooking.player2 = 0;
+          }
+        });
+      }
+    });
+
+    // 3. Manual Entry Listener
     _player2Controller.addListener(_updatePlayer2NameFromController);
   }
 
   @override
   Widget build(BuildContext context) {
     final user = viewModel.theLoggedInUser;
-    theBooking.player1 = user?.userId ?? -1;
 
     // Sync player1 if it's currently invalid but we have a valid logged-in user.
     // This handles cases where the user ID is loaded after initState or during a refresh.
@@ -266,8 +269,31 @@ class _MakeBookingState extends State<MakeBookingTile> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: DropdownMenu<int>( // Changed to int
-                initialSelection: 0, // Default to 'No Opponent selected' ID
                 expandedInsets: EdgeInsets.zero,
+                controller: _player2SearchController,
+                hintText: 'No Opponent selected',
+                menuStyle: _player2SearchController.text.isEmpty
+                    ? const MenuStyle(
+                        elevation: MaterialStatePropertyAll(0),
+                        padding: MaterialStatePropertyAll(EdgeInsets.zero),
+                        backgroundColor: MaterialStatePropertyAll(Colors.transparent),
+                        shadowColor: MaterialStatePropertyAll(Colors.transparent),
+                        surfaceTintColor: MaterialStatePropertyAll(Colors.transparent),
+                        // You might need to experiment with other properties like shape, side, etc., if the box persists
+                      )
+                    : null, // Use default style when not empty
+                enableFilter: false, // Disable internal filtering
+                requestFocusOnTap: true,
+                leadingIcon: Icon(Icons.search, color: bwgDarkpurple),
+                trailingIcon: _player2SearchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _player2SearchController.clear();
+                          setState(() => theBooking.player2 = 0);
+                        },
+                      )
+                    : null,
                 inputDecorationTheme: InputDecorationTheme(
                   filled: true,
                   fillColor: Colors.white,
@@ -283,26 +309,25 @@ class _MakeBookingState extends State<MakeBookingTile> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                dropdownMenuEntries: [
-                  DropdownMenuEntry<int>( // Changed to int
-                    value: 0,
-                    label: 'No Opponent selected',
-                  ),
-                  for (var theOpponent in widget.theGamersList/*.where((g) => g.userId != theBooking.userId)*/)
-                    DropdownMenuEntry<int>( // Changed to int
-                      value: theOpponent.userId,
-                      label: theOpponent.nickName,
-                    ),
-                  DropdownMenuEntry<int>( // Changed to int
-                    value: -1, // Sentinel value for "Other"
-                    label: 'Other',
-                  ),
-                ],
+                dropdownMenuEntries: _buildPlayer2DropdownEntries(),
                 onSelected: (value) {
                   setState(() {
                     theBooking.player2 = value!; // value is int now
                     if (value != -1) { // If not "Other"
                       _player2Controller.clear();
+                    }
+                    // Update the search controller text to reflect the selection
+                    // This is important because we disabled internal filtering
+                    if (value != 0 && value != -1) { // If a specific gamer is selected
+                      final selectedGamer = widget.theGamersList.firstWhere(
+                        (g) => g.userId == value,
+                        orElse: () => Gamer(userId: -99, nickName: 'Unknown', isSubscriber: false) // Provide a default or handle error
+                      );
+                      _player2SearchController.text = selectedGamer.nickName;
+                    } else if (value == -1) { // "Other" is selected
+                      _player2SearchController.text = 'Other';
+                    } else { // "No Opponent selected"
+                      _player2SearchController.clear();
                     }
                   });
                 },
@@ -321,7 +346,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
             Expanded(
               flex: 2, 
               child: Text(
-                'Opponent Name:', // Changed label
+                '', // Changed label
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: bwgDarkpurple,
@@ -589,5 +614,47 @@ class _MakeBookingState extends State<MakeBookingTile> {
         )
       )
     );
+  }
+
+  List<DropdownMenuEntry<int>> _buildPlayer2DropdownEntries() {
+    final String searchText = _player2SearchController.text.toLowerCase();
+    if (searchText.isEmpty) {
+      return [];
+    }
+
+    List<DropdownMenuEntry<int>> entries = [];
+
+    if ('other'.contains(searchText)) {
+      entries.add(
+        const DropdownMenuEntry<int>(
+          value: -1,
+          label: 'Other',
+        ),
+      );
+    }
+
+    final filteredGamers = widget.theGamersList
+        .where((g) => g.userId != theBooking.player1 && g.nickName.toLowerCase().contains(searchText))
+        .toList()
+      ..sort((a, b) => a.nickName.toLowerCase().compareTo(b.nickName.toLowerCase()));
+
+    for (var theOpponent in filteredGamers) {
+      entries.add(
+        DropdownMenuEntry<int>(
+          value: theOpponent.userId,
+          label: theOpponent.nickName,
+        ),
+      );
+    }
+
+    return entries;
+  }
+
+  @override
+  void dispose() {
+    _player1Controller.dispose();
+    _player2Controller.dispose();
+    _player2SearchController.dispose();
+    super.dispose();
   }
 }
