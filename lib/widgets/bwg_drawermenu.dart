@@ -173,7 +173,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
     setState(() {
       firstName = _capitalise(_firstNameController.text);
       lastName = _capitalise(_lastNameController.text);
-      if (_formKey.currentState!.validate()) {
+      if (_formKey.currentState != null && _formKey.currentState!.validate()) {
         iconColor = bwgGreen;
       } else {
         iconColor = bwgRed;
@@ -418,21 +418,20 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                             Expanded(
                                 flex: 7, 
                                 child:TextButton(
-                            onPressed: () async {
+                                  onPressed: () async {
                                     // Validate returns true if the form is valid, or false otherwise.
-                                if (_formKey.currentState!.validate() && user != null) {
+                                    if (_formKey.currentState!.validate() && user != null) {
                                       _updateNames();
-                                  final updatedUser = LoggedInUser(
-                                    userId: viewModel.theLoggedInUser?.userId ?? -1,
-                                    authId: user!.uid,
-                                    userFirstName: firstName,
-                                    userLastName: lastName,
-                                    userNickName: nickname,
-                                    loginType: 'Google',
-                                  );
-                                  
-                                  await viewModel.addUser(updatedUser);
-                                  if (mounted) Navigator.pop(context);
+                                      final updatedUser = LoggedInUser(
+                                        userId: viewModel.theLoggedInUser?.userId ?? -1,
+                                        authId: user!.uid,
+                                        userFirstName: firstName,
+                                        userLastName: lastName,
+                                        userNickName: nickname,
+                                        loginType: 'Google',
+                                      );
+                                      await viewModel.addUser(updatedUser);
+                                      if (mounted) Navigator.pop(context);
                                     }
                                 },
                                 style: TextButton.styleFrom(

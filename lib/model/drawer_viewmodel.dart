@@ -23,7 +23,6 @@ class DrawerViewModel extends ChangeNotifier {
 
   Future<void> addUser(LoggedInUser theNewUser) async {
     updateStatus(LoadStates.loading); // Good practice to show a spinner
-  
     try {
       // 1. Call the API to Get or Create the User in the MySQL DB
       final response = await http.post(

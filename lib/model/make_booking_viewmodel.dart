@@ -1,14 +1,13 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'table_booking.dart';
+import 'game_booking.dart';
 import 'dart:io';
 import '../utilities/load_states.dart';
 import '../repositories/user_repository.dart';
 import 'logged_in_user.dart';
 
 class MakeBookingViewModel extends ChangeNotifier {
-  //final MakeBookingViewModel theViewModel;
-  TableBooking theBooking;
+  GameBooking theBooking;
   String? errorMessage;
   LoadStates theStatus = LoadStates.editing;
   bool bookingMade = false;
@@ -23,7 +22,7 @@ class MakeBookingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createBooking(TableBooking theBookingToMake) async {
+  Future<void> createBooking(GameBooking theBookingToMake) async {
     theBooking = theBookingToMake;
     final url = Uri.parse(
       'https://musterpointapp.com/api/createGameBooking.php',
@@ -36,13 +35,14 @@ class MakeBookingViewModel extends ChangeNotifier {
       await http.post(
         url,
         body: {
-          'player1': theBooking.player1,
-          'player2': theBooking.player2,
+          'player1': theBooking.player1.toString(),
+          'player2': theBooking.player2.toString(),
           'gameSystem': theBooking.gameSystem,
           'theDate': theBooking.bookingDate.toIso8601String(),
           // Convert bool to string and int to string for the POST body
           'isOrganised': theBooking.isOrganised.toString(),
           'requiredTables': theBooking.requiredTables.toString(),
+          'player2Name': theBooking.player2Name,
         },
       );
       errorMessage = null;
