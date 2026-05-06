@@ -157,7 +157,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         DayBookingTile(
           entry.key,
           entry.value,
-          isExpanded: expandedState[key] ?? true,
+          isExpanded: expandedState[key] ?? false,
           onToggle: () {
             setState(() {
               expandedState[key] = !(expandedState[key] ?? true);
