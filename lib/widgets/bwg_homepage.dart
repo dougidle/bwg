@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'bwg_widgets.dart';
 import '../model/table_booking.dart';
+import '../model/game_booking.dart';
 import '../model/gamer.dart';
 import '../model/logged_in_user.dart';
 import '../utilities/load_states.dart';
@@ -24,6 +25,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   late AnimationController controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<TableBooking> theBookingsList = [];
+  List<GameBooking> theGameBookingsList = [];
   List<Gamer> theGamersList = [];
   late LoggedInUser theLoggedInUser; 
   Map<String, bool> expandedState = {};
@@ -58,12 +60,14 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       // Fetch both Bookings and Gamers in parallel for better performance
       final results = await Future.wait([
         viewModel.fetchBookings(),
+        viewModel.fetchGameBookings(),
         viewModel.fetchGamers(),
       ]);
 
       setState(() {
         theBookingsList = results[0] as List<TableBooking>;
-        theGamersList = results[1] as List<Gamer>;
+        theGameBookingsList = results[1] as List<GameBooking>;
+        theGamersList = results[2] as List<Gamer>;
         _loadState = LoadStates.done;
       });
 
@@ -130,9 +134,11 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     List<DayBookingTile> allDaysBookingsTileList = [];
-    final theGroupedBookings = viewModel.groupBookingsByDate(theBookingsList);
+    final convertedBookings = viewModel.convertGameBookingsToBookings(theGameBookingsList, theGamersList);
+    final allCombinedBookings = theBookingsList + convertedBookings;
+    final theGroupedBookings = viewModel.groupBookingsByDate(allCombinedBookings);
     final sortedEntries = theGroupedBookings.entries.toList()
-      ..sort((a, b) => a.key.compareTo(b.key)); // ascending
+      ..sort((a, b) => a.key.compareTo(b.key));
 
     for (var entry in sortedEntries) {
       final key = entry.key.toIso8601String();
