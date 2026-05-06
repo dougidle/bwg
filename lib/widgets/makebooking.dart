@@ -18,7 +18,6 @@ class _MakeBookingState extends State<MakeBookingTile> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
   final TextEditingController _player2SearchController = TextEditingController();
-  late VoidCallback _viewModelListener; // Declare the listener
   final viewModel = MakeBookingViewModel(
     GameBooking(
       player1: -1,

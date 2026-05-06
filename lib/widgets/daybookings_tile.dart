@@ -88,12 +88,19 @@ class DayBookingTile extends StatelessWidget {
                             fontSize: 16.0,
                           ),
                         ),
-                        Text(
-                          theTableText,
-                          style: TextStyle(
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                          decoration: BoxDecoration(
                             color: theTableColor,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 14.0,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            theTableText,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 12.0,
+                            ),
                           ),
                         ),
                       ],

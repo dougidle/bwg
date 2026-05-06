@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../model/table_booking.dart';
 import '../resources/bwg_colors.dart';
 import '../widgets/booking_tile.dart';
@@ -37,10 +36,6 @@ class _MyBookingsTile extends State<MyBookingsTile> {
 
   @override
   Widget build(BuildContext context) {
-    final formatter = DateFormat('d MMMM yyyy');
-    String theTableText = '';
-    Color theTableColor = bwgDarkpurple;
-
     Icon theIcon;
     if (_isExpanded) {
       theIcon = Icon(Icons.expand_less);
