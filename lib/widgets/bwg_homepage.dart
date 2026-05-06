@@ -10,6 +10,7 @@ import '../utilities/load_states.dart';
 import '../model/bwg_homepage_viewmodel.dart';
 import '../widgets/usericon.dart';
 import '../widgets/contentcard.dart';
+import '../widgets/mybookings.dart';
 
 class BWGHomePage extends StatefulWidget {
   const BWGHomePage({super.key, required this.title});
@@ -134,8 +135,18 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     List<DayBookingTile> allDaysBookingsTileList = [];
+    final user = viewModel.theLoggedInUser;
     final convertedBookings = viewModel.convertGameBookingsToBookings(theGameBookingsList, theGamersList);
     final allCombinedBookings = theBookingsList + convertedBookings;
+
+    // Calculate user-specific bookings at the top of build to avoid syntax errors in the widget tree
+    final userBookings = user != null
+        ? allCombinedBookings.where((booking) =>
+            booking.player1 == user.userNickName ||
+            booking.player2 == user.userNickName
+          ).toList()
+        : <TableBooking>[];
+
     final theGroupedBookings = viewModel.groupBookingsByDate(allCombinedBookings);
     final sortedEntries = theGroupedBookings.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
@@ -258,6 +269,8 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
              ContentCard(
               'Please login using the icon top right before you use the app.'
             ) else ...[
+              if (userBookings.isNotEmpty)
+                MyBookingsTile(myBookings: userBookings),
               MakeBookingTile(theGamersList: theGamersList),
               ...allDaysBookingsTileList
             ] 
