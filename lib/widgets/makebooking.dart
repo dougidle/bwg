@@ -623,15 +623,6 @@ class _MakeBookingState extends State<MakeBookingTile> {
 
     List<DropdownMenuEntry<int>> entries = [];
 
-    if ('other'.contains(searchText)) {
-      entries.add(
-        const DropdownMenuEntry<int>(
-          value: -1,
-          label: 'Other',
-        ),
-      );
-    }
-
     final filteredGamers = widget.theGamersList
         .where((g) => g.userId != theBooking.player1 && g.nickName.toLowerCase().contains(searchText))
         .toList()
@@ -645,6 +636,13 @@ class _MakeBookingState extends State<MakeBookingTile> {
         ),
       );
     }
+
+    entries.add(
+        const DropdownMenuEntry<int>(
+          value: -1,
+          label: 'Other',
+        ),
+      );
 
     return entries;
   }
