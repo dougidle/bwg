@@ -25,7 +25,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   DateTime theDate =  DateTime.now();
   late AnimationController controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<TableBooking> theBookingsList = [];
   List<GameBooking> theGameBookingsList = [];
   List<Gamer> theGamersList = [];
   late LoggedInUser theLoggedInUser; 
@@ -66,13 +65,12 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
       ]);
 
       setState(() {
-        theBookingsList = results[0] as List<TableBooking>;
         theGameBookingsList = results[1] as List<GameBooking>;
         theGamersList = results[2] as List<Gamer>;
         _loadState = LoadStates.done;
       });
 
-      debugPrint('Successfully loaded ${theGamersList.length} gamers and ${theBookingsList.length} bookings.');
+      debugPrint('Successfully loaded ${theGamersList.length} gamers and ${theGameBookingsList.length} bookings.');
     } catch (e) {
       debugPrint('Error refreshing data: $e');
       setState(() {
@@ -136,18 +134,17 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     List<DayBookingTile> allDaysBookingsTileList = [];
     final user = viewModel.theLoggedInUser;
-    final convertedBookings = viewModel.convertGameBookingsToBookings(theGameBookingsList, theGamersList);
-    final allCombinedBookings = theBookingsList + convertedBookings;
 
+    
     // Calculate user-specific bookings at the top of build to avoid syntax errors in the widget tree
     final userBookings = user != null
-        ? allCombinedBookings.where((booking) =>
-            booking.player1 == user.userNickName ||
-            booking.player2 == user.userNickName
+        ? theGameBookingsList.where((booking) =>
+            booking.player1 == user.userId ||
+            booking.player2 == user.userId
           ).toList()
-        : <TableBooking>[];
+        : <GameBooking>[];
 
-    final theGroupedBookings = viewModel.groupBookingsByDate(allCombinedBookings);
+    final theGroupedBookings = viewModel.groupGameBookingsByDate(theGameBookingsList);
     final sortedEntries = theGroupedBookings.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
 
@@ -157,6 +154,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         DayBookingTile(
           entry.key,
           entry.value,
+          theGamersList,
           isExpanded: expandedState[key] ?? false,
           onToggle: () {
             setState(() {
@@ -270,7 +268,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
               'Please login using the icon top right before you use the app.'
             ) else ...[
               if (userBookings.isNotEmpty)
-                MyBookingsTile(myBookings: userBookings),
+                MyBookingsTile(myBookings: userBookings, theGamersList: theGamersList),
               MakeBookingTile(theGamersList: theGamersList),
               ...allDaysBookingsTileList
             ] 

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../model/table_booking.dart';
+import '../model/game_booking.dart';
 import '../resources/bwg_colors.dart';
 import '../widgets/booking_tile.dart';
+import '../model/gamer.dart';
 
 class MyBookingsTile extends StatefulWidget {
-  final List<TableBooking> myBookings;
-  const MyBookingsTile({super.key, required this.myBookings});
+  final List<GameBooking> myBookings;
+  final List<Gamer> theGamersList;
+  const MyBookingsTile({super.key, required this.myBookings, required this.theGamersList});
 
   @override
   State<MyBookingsTile> createState() => _MyBookingsTile();
@@ -45,13 +47,35 @@ class _MyBookingsTile extends State<MyBookingsTile> {
 
     List<Widget> bookingsList = [];
     for (var i = 0; i < widget.myBookings.length; i++) {
+      final booking = widget.myBookings[i];
+
+      final p1Gamer = widget.theGamersList.cast<Gamer?>().firstWhere(
+            (g) => g?.userId == booking.player1,
+            orElse: () => null,
+          );
+
+      String p2Name = 'No Opponent';
+      bool p2Sub = false;
+      if (booking.player2 == -1) {
+        p2Name = booking.player2Name;
+      } else if (booking.player2 > 0) {
+        final p2Gamer = widget.theGamersList.cast<Gamer?>().firstWhere(
+              (g) => g?.userId == booking.player2,
+              orElse: () => null,
+            );
+        p2Name = p2Gamer?.nickName ?? 'Unknown';
+        p2Sub = p2Gamer?.isSubscriber ?? false;
+      }
+
       bookingsList.add(
         BookingTile(
-          widget.myBookings[i].player1, 
-          widget.myBookings[i].player2,
-          widget.myBookings[i].gameSystem,
-          widget.myBookings[i].isOrganised,
-          key: ValueKey('${widget.myBookings[i].player1}-${widget.myBookings[i].player2}-$i'),
+          p1Gamer?.nickName ?? 'Unknown',
+          p2Name,
+          booking.gameSystem,
+          booking.isOrganised,
+          isPlayer1Subscriber: p1Gamer?.isSubscriber ?? false,
+          isPlayer2Subscriber: p2Sub,
+          key: ValueKey('${booking.player1}-${booking.player2}-$i'),
         )
       );
     }

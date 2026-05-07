@@ -1,20 +1,23 @@
+import 'package:bwg/model/game_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'bwg_widgets.dart';
-import '../model/table_booking.dart';
 import '../resources/bwg_colors.dart';
+import '../model/gamer.dart';
 
 class DayBookingTile extends StatelessWidget {
   const DayBookingTile(
     this.theDate,
-    this.theBookings, {
+    this.theBookings,
+    this.theGamers, {
     required this.isExpanded,
     required this.onToggle,
     super.key,
   });
 
   final DateTime theDate;
-  final List<TableBooking> theBookings;
+  final List<GameBooking> theBookings;
+  final List<Gamer> theGamers;
   final bool isExpanded;
   final VoidCallback onToggle;
 
@@ -36,14 +39,36 @@ class DayBookingTile extends StatelessWidget {
     int tablesUsed = 0;
 
     for (var i = 0; i < theBookings.length; i++) {
-      tablesUsed += theBookings[i].requiredTables;
+      final booking = theBookings[i];
+      tablesUsed += booking.requiredTables;
+
+      final p1Gamer = theGamers.cast<Gamer?>().firstWhere(
+            (g) => g?.userId == booking.player1,
+            orElse: () => null,
+          );
+
+      String p2Name = 'No Opponent';
+      bool p2Sub = false;
+      if (booking.player2 == -1) {
+        p2Name = booking.player2Name;
+      } else if (booking.player2 > 0) {
+        final p2Gamer = theGamers.cast<Gamer?>().firstWhere(
+              (g) => g?.userId == booking.player2,
+              orElse: () => null,
+            );
+        p2Name = p2Gamer?.nickName ?? 'Unknown';
+        p2Sub = p2Gamer?.isSubscriber ?? false;
+      }
+
       bookingsList.add(
         BookingTile(
-          theBookings[i].player1, 
-          theBookings[i].player2,
-          theBookings[i].gameSystem,
-          theBookings[i].isOrganised,
-          key: ValueKey('${theBookings[i].player1}-${theBookings[i].player2}-$i'),
+          p1Gamer?.nickName ?? 'Unknown',
+          p2Name,
+          booking.gameSystem,
+          booking.isOrganised,
+          isPlayer1Subscriber: p1Gamer?.isSubscriber ?? false,
+          isPlayer2Subscriber: p2Sub,
+          key: ValueKey('${booking.player1}-${booking.player2}-$i'),
         )
       );
     }
