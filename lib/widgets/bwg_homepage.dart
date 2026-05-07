@@ -269,7 +269,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
             ) else ...[
               if (userBookings.isNotEmpty)
                 MyBookingsTile(myBookings: userBookings, theGamersList: theGamersList),
-              MakeBookingTile(theGamersList: theGamersList),
+              MakeBookingTile(theGamersList: theGamersList, onBookingMade: _refreshAllData),
               ...allDaysBookingsTileList
             ] 
           ] 

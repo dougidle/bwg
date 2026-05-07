@@ -7,8 +7,9 @@ import '../model/make_booking_viewmodel.dart';
 import '../model/gamer.dart';
 
 class MakeBookingTile extends StatefulWidget {
+  final VoidCallback? onBookingMade;
   final List<Gamer> theGamersList;
-  const MakeBookingTile({super.key, required this.theGamersList});
+  const MakeBookingTile({super.key, required this.theGamersList, this.onBookingMade});
 
   @override
   State<MakeBookingTile> createState() => _MakeBookingState();
@@ -135,6 +136,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
                     theBooking.player2Name = '';
                     theBooking.gameSystem = 'No game chosen';
                     theBooking.bookingDate = DateTime(1970, 1, 1, 0, 0);
+                    widget.onBookingMade?.call(); // Call the callback
                   });
                 },
                 child: const Text('OK'),
