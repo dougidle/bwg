@@ -86,28 +86,30 @@ class _MyBookingsTile extends State<MyBookingsTile> {
         color: bwgLilac,
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        'My bookings',
-                        style: TextStyle(
-                          color: bwgDarkpurple,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0
-                        )
-                      ),
-                      Spacer(),
-                      IconButton(
-                        onPressed: _doExpand, 
-                        icon: theIcon),
-                    ]
-                  ),
-                  if (_isExpanded) ...bookingsList,
-                ]
+            InkWell(
+              onTap: _doExpand,
+              borderRadius: BorderRadius.circular(8.0),
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'My bookings',
+                          style: TextStyle(
+                            color: bwgDarkpurple,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0
+                          )
+                        ),
+                        Spacer(),
+                        IconButton(onPressed: _doExpand, icon: theIcon),
+                      ]
+                    ),
+                    if (_isExpanded) ...bookingsList,
+                  ]
+                ),
               ),
             ),
           ]

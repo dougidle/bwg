@@ -2,7 +2,6 @@ import 'package:bwg/resources/bwg_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'bwg_widgets.dart';
-import '../model/table_booking.dart';
 import '../model/game_booking.dart';
 import '../model/gamer.dart';
 import '../model/logged_in_user.dart';
@@ -28,10 +27,8 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   List<GameBooking> theGameBookingsList = [];
   List<Gamer> theGamersList = [];
   late LoggedInUser theLoggedInUser; 
-  Map<String, bool> expandedState = {};
+  final Set<String> expandedDays = {};
   final viewModel = BWGHomePageViewModel();
-  Color loginIconColor = bwgRed;
-  Icon loginIcon = const Icon(Icons.person_off);
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -86,13 +83,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     _initPackageInfo();
     _refreshAllData();
 
-    // Handle initial value (already loaded from DB)
-    final user = viewModel.theLoggedInUser;
-    if (user != null ) {
-      loginIcon = Icon(Icons.person);
-      loginIconColor = bwgGreen;
-    }
-
     viewModel.addListener(_onViewModelChange);
 
     controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
@@ -100,19 +90,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   }
 
   void _onViewModelChange() {
-    if (mounted) {
-      setState(() {
-        final user = viewModel.theLoggedInUser;
-
-        if (user != null) {
-          loginIcon = const Icon(Icons.person);
-          loginIconColor = bwgGreen;
-        } else {
-          loginIcon = const Icon(Icons.person_off);
-          loginIconColor = bwgRed;
-        }
-      });
-      }
+    if (mounted) setState(() {});
   }
 
   @override
@@ -155,10 +133,12 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
           entry.key,
           entry.value,
           theGamersList,
-          isExpanded: expandedState[key] ?? false,
+          isExpanded: expandedDays.contains(key),
           onToggle: () {
             setState(() {
-              expandedState[key] = !(expandedState[key] ?? true);
+              if (!expandedDays.add(key)) {
+                expandedDays.remove(key);
+              }
             });
           },
           key: ValueKey(key),

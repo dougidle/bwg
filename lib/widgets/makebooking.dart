@@ -49,6 +49,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
   'Warhammer: The Old World': 2,
   'Warhammer: Horus Heresy': 2,
   'Kill Team': 1,
+  'Combat Patrol': 1,
   'Blood Bowl': 1,
 };
 
@@ -275,11 +276,11 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 hintText: 'No Opponent selected',
                 menuStyle: _player2SearchController.text.isEmpty
                     ? const MenuStyle(
-                        elevation: MaterialStatePropertyAll(0),
-                        padding: MaterialStatePropertyAll(EdgeInsets.zero),
-                        backgroundColor: MaterialStatePropertyAll(Colors.transparent),
-                        shadowColor: MaterialStatePropertyAll(Colors.transparent),
-                        surfaceTintColor: MaterialStatePropertyAll(Colors.transparent),
+                        elevation: WidgetStatePropertyAll(0),
+                        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                        backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                        shadowColor: WidgetStatePropertyAll(Colors.transparent),
+                        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
                         // You might need to experiment with other properties like shape, side, etc., if the box persists
                       )
                     : null, // Use default style when not empty
@@ -601,14 +602,17 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 CircularProgressIndicator(),
               _ => Column(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: 
-                        theWidgetList
-                    ) ,
+                  InkWell(
+                    onTap: _doExpand,
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: theWidgetList,
+                      ),
+                    ),
                   ),
-                ]
+                ],
               )
             };
           } 
