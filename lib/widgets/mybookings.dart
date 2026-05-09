@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/game_booking.dart';
 import '../resources/bwg_colors.dart';
-import '../widgets/booking_tile.dart';
+import '../widgets/my_bookings_tile.dart';
 import '../model/gamer.dart';
 
 class MyBookingsTile extends StatefulWidget {
@@ -68,11 +68,12 @@ class _MyBookingsTile extends State<MyBookingsTile> {
       }
 
       bookingsList.add(
-        BookingTile(
-          p1Gamer?.nickName ?? 'Unknown',
-          p2Name,
-          booking.gameSystem,
-          booking.isOrganised,
+        MyBookingTile(
+          player1: p1Gamer?.nickName ?? 'Unknown',
+          player2: p2Name,
+          gameSystem: booking.gameSystem,
+          bookingDate: booking.bookingDate,
+          isOrganised: booking.isOrganised,
           isPlayer1Subscriber: p1Gamer?.isSubscriber ?? false,
           isPlayer2Subscriber: p2Sub,
           key: ValueKey('${booking.player1}-${booking.player2}-$i'),
