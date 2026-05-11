@@ -62,20 +62,30 @@ class MakeBookingViewModel extends ChangeNotifier {
     return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
-  List<DateTime> getNextGameDays() {
+  List<DateTime> getNextGameDays(bool isSubscriber) {
     List<DateTime> theAvailableGameDays = [];
-    DateTime currentDate = DateTime.now();
-    currentDate = withTime(currentDate, 19, 00);
-    int todayDay = currentDate.weekday;
+    DateTime now = DateTime.now();
+    int currentMonth = now.month;
 
-    if (todayDay != 4) {
-        var days = (7 - todayDay + 4) % 7;
-        currentDate = currentDate.add(Duration(days: days));
+    // Start looking from today at 19:00
+    DateTime dateIterator = withTime(now, 19, 00);
+
+    // Find the next Thursday (4), or today if it is a Thursday
+    int daysUntilThursday = (DateTime.thursday - dateIterator.weekday + 7) % 7;
+    dateIterator = dateIterator.add(Duration(days: daysUntilThursday));
+
+    if (isSubscriber) {
+      // Add all Thursdays until the end of the current month
+      while (dateIterator.month == currentMonth) {
+        theAvailableGameDays.add(dateIterator);
+        dateIterator = dateIterator.add(const Duration(days: 7));
+      }
+    } else {
+      // Return only the next Thursday but only if it is at least the Monday before (Mon-Thu)
+      if (now.weekday <= DateTime.thursday) {
+        theAvailableGameDays.add(dateIterator);
+      }
     }
-
-    theAvailableGameDays.add(currentDate);
-    theAvailableGameDays.add(currentDate.add(Duration(days: 7)));
-
     return theAvailableGameDays;
   }
 }

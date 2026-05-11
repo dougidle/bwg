@@ -59,6 +59,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         viewModel.fetchBookings(),
         viewModel.fetchGameBookings(),
         viewModel.fetchGamers(),
+        viewModel.fetchGamer(),
       ]);
 
       setState(() {

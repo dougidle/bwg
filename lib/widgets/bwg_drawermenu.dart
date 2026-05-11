@@ -138,6 +138,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
           userLastName: lName,
           userNickName: nick,
           loginType: 'Google',
+          isSubscriber: false
         );
         await UserRepository.instance.saveUser(newUser);
 
@@ -429,6 +430,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                         userLastName: lastName,
                                         userNickName: nickname,
                                         loginType: 'Google',
+                                        isSubscriber: false,
                                       );
                                       await viewModel.addUser(updatedUser);
                                       if (mounted) Navigator.pop(context);

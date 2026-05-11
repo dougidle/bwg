@@ -185,7 +185,11 @@ class _MakeBookingState extends State<MakeBookingTile> {
     }
     List<Widget> theContentList = [];
     List<Widget> theWidgetList = [];
-    final List<DateTime> gameDays = viewModel.getNextGameDays();
+
+    // Look up the logged-in user in the gamers list to find their subscription status
+    final bool isSubscriber = widget.theGamersList.any((g) => g.userId == user?.userId && g.isSubscriber);
+
+    final List<DateTime> gameDays = viewModel.getNextGameDays(isSubscriber);
 
     // Widget title
     theWidgetList.add(

@@ -25,8 +25,9 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Increment the database version
       onCreate: _createDB,
+      onUpgrade: _onUpgrade, // Add the onUpgrade callback
     );
   }
 
@@ -40,9 +41,20 @@ class DatabaseHelper {
         userFirstName TEXT NOT NULL,
         userLastName TEXT NOT NULL,
         userNickName TEXT NOT NULL,
-        loginType TEXT NOT NULL
+        loginType TEXT NOT NULL,
+        isSubscriber INTEGER NOT NULL DEFAULT 0 -- Add the new column with a default value
       )
     ''');
+  }
+
+  // Handle database schema upgrades
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Migrate from version 1 to 2: Add isSubscriber column
+      // Provide a default value (0 for false) for existing rows
+      await db.execute('ALTER TABLE loggedInUser ADD COLUMN isSubscriber INTEGER NOT NULL DEFAULT 0');
+    }
+    // Add more migration steps here for future versions if needed
   }
 
   // Optional: close DB
@@ -66,7 +78,7 @@ class DatabaseHelper {
 
     final result = await db.query('loggedInUser');
 
-    return result.map((json) => LoggedInUser.fromMap(json)).toList();
+    return result.map((json) => LoggedInUser.fromJson(json)).toList();
   }
 
   Future<int> deleteAllUsers() async {

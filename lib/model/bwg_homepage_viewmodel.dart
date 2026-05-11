@@ -73,6 +73,33 @@ class BWGHomePageViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchGamer() async {
+    final user = theLoggedInUser;
+    if (user == null || user.userId <= 0) return;
+
+    final url = Uri.parse(
+      'https://musterpointapp.com/api/getGamer.php?UserId=${user.userId}',
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> gamerData = jsonDecode(response.body);
+      
+      final currentUser = theLoggedInUser;
+      if (currentUser != null) {
+        // Update the local user object with fields from the Gamer API response
+        currentUser.userNickName = gamerData['NickName'] ?? currentUser.userNickName;
+        currentUser.isSubscriber = gamerData['isSubscriber'] == 1 || gamerData['isSubscriber'] == true;
+
+        await deleteAllUsers();
+        await addUser(currentUser);
+      }
+    } else {
+      throw Exception('Failed to load gamer: ${response.statusCode}');
+    }
+  }
+
   Map<DateTime, List<GameBooking>> groupGameBookingsByDate(List<GameBooking> bookings) {
     final Map<DateTime, List<GameBooking>> grouped = {};
 
