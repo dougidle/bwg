@@ -604,20 +604,16 @@ class _MakeBookingState extends State<MakeBookingTile> {
             viewModel.theStatus)) {
               (LoadStates.loading) => 
                 CircularProgressIndicator(),
-              _ => Column(
-                children: <Widget>[
-                  InkWell(
-                    onTap: _doExpand,
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: theWidgetList,
-                      ),
-                    ),
-                  ),
-                ],
-              )
+              _ => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    // The IconButton in the first row (theWidgetList[0]) now solely handles _doExpand
+                    // The rest of the card is not tappable for expand/collapse
+                    ...theWidgetList,
+                  ]
+                ),
+              ),
             };
           } 
         )

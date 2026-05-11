@@ -92,61 +92,53 @@ class DayBookingTile extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       child: Card(
         color: bwgLilac,
-        child: Column(
-          children: <Widget>[
-            InkWell(
-              onTap: onToggle,
-              borderRadius: BorderRadius.circular(8.0),
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '$theFormattedDate - ${bookingsList.length} bookings',
-                                style: TextStyle(
-                                  color: bwgDarkpurple,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                                decoration: BoxDecoration(
-                                  color: theTableColor,
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child: Text(
-                                  theTableText,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            ],
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$theFormattedDate - ${bookingsList.length} bookings',
+                          style: TextStyle(
+                            color: bwgDarkpurple,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
                           ),
                         ),
-                        IconButton(
-                          onPressed: onToggle, 
-                          icon: theIcon
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                          decoration: BoxDecoration(
+                            color: theTableColor,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            theTableText,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 12.0,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    if (isExpanded) ...bookingsList,
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    onPressed: onToggle, 
+                    icon: theIcon
+                  ),
+                ],
               ),
-            ),
-          ]
-        )
+              if (isExpanded) ...bookingsList,
+            ],
+          ),
+        ),
       )
     );
   }
