@@ -9,7 +9,8 @@ import '../model/gamer.dart';
 class MakeBookingTile extends StatefulWidget {
   final VoidCallback? onBookingMade;
   final List<Gamer> theGamersList;
-  const MakeBookingTile({super.key, required this.theGamersList, this.onBookingMade});
+  final List<GameBooking> theUsersBookings;
+  const MakeBookingTile({super.key, required this.theGamersList, required this.theUsersBookings, this.onBookingMade});
 
   @override
   State<MakeBookingTile> createState() => _MakeBookingState();
@@ -568,6 +569,31 @@ class _MakeBookingState extends State<MakeBookingTile> {
                   if (currentUser != null && currentUser.userId > 0) {
                     theBooking.player1 = currentUser.userId;
                   }
+
+                  // Check if the user is already involved in a booking on the selected day
+                  final bool alreadyBooked = widget.theUsersBookings.any(
+                    (b) => DateUtils.isSameDay(b.bookingDate, theBooking.bookingDate)
+                  );
+
+                  if (alreadyBooked) {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Barming Wargamers'),
+                        content: const Text(
+                          'You already have a booking for this date. You can only be part of one game per club night.'
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    return; // Prevent the booking from being created
+                  }
+
                   viewModel.createBooking(theBooking);
                 },
                 style: TextButton.styleFrom( // Removed unnecessary comment
