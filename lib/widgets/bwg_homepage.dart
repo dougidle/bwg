@@ -1,6 +1,7 @@
 import 'package:bwg/resources/bwg_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'bwg_widgets.dart';
 import '../model/game_booking.dart';
 import '../model/gamer.dart';
@@ -10,6 +11,7 @@ import '../model/bwg_homepage_viewmodel.dart';
 import '../widgets/usericon.dart';
 import '../widgets/contentcard.dart';
 import '../widgets/mybookings.dart';
+import '../widgets/armylist_placeholder.dart';
 
 class BWGHomePage extends StatefulWidget {
   const BWGHomePage({super.key, required this.title});
@@ -29,6 +31,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   late LoggedInUser theLoggedInUser; 
   final Set<String> expandedDays = {};
   final viewModel = BWGHomePageViewModel();
+  int _selectedIndex = 0;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -111,6 +114,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    const String armyListKey = 'army_list_placeholder';
     List<DayBookingTile> allDaysBookingsTileList = [];
     final user = viewModel.theLoggedInUser;
 
@@ -200,6 +204,12 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         );
     }
 
+    void _onItemTapped(int index) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -241,28 +251,64 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         ],
       ),
       backgroundColor: Colors.black,
-      body: Center(
-        child: ListView(
-          children: <Widget>[
-            if (viewModel.theLoggedInUser == null) 
-             ContentCard(
-              'Please login using the icon top right before you use the app.'
-            ) else ...[
-              if (userBookings.isNotEmpty)
-                MyBookingsTile(myBookings: userBookings, theGamersList: theGamersList),
-              MakeBookingTile(
-                theGamersList: theGamersList, 
-                theUsersBookings: userBookings,
-                onBookingMade: _refreshAllData),
-              ...allDaysBookingsTileList
-            ] 
-          ] 
-        ),
-      ),
-      drawer: Drawer(
+      body: _selectedIndex == 0
+          ? Center(
+              child: ListView(
+                children: <Widget>[
+                  if (viewModel.theLoggedInUser == null)
+                    ContentCard(
+                      'Please login using the icon top right before you use the app.',
+                    )
+                  else ...[
+                    if (userBookings.isNotEmpty)
+                      MyBookingsTile(
+                          myBookings: userBookings,
+                          theGamersList: theGamersList),
+                    MakeBookingTile(
+                        theGamersList: theGamersList,
+                        theUsersBookings: userBookings,
+                        onBookingMade: _refreshAllData),
+                    ...allDaysBookingsTileList
+                  ]
+                ],
+              ),
+            )
+          : ListView(
+              children: <Widget>[
+                ArmyListPlaceholderTile(
+                  isExpanded: expandedDays.contains(armyListKey),
+                  onToggle: () {
+                    setState(() {
+                      if (!expandedDays.add(armyListKey)) {
+                        expandedDays.remove(armyListKey);
+                      }
+                    });
+                  },
+                  key: const ValueKey(armyListKey),
+                ),
+              ],
+            ),
+        drawer: Drawer(
         backgroundColor: Colors.black,
         child: BWGDrawerMenu()
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'Bookings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Symbols.swords),
+            label: 'Army Lists',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped, 
+        selectedItemColor: bwgLilac,
+        unselectedItemColor: bwgDarkpurple,
+        backgroundColor: Colors.black,
+  ),
     );
   }
 }
