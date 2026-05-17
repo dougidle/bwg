@@ -299,8 +299,8 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
             label: 'Bookings',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Symbols.swords),
-            label: 'Army Lists',
+            icon: Icon(Symbols.assignment),
+            label: 'Admin',
           ),
         ],
         currentIndex: _selectedIndex,
