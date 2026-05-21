@@ -1,17 +1,19 @@
-
 import 'package:flutter/material.dart';
 import '../resources/bwg_colors.dart';
+import '../model/gamer.dart';
+import 'player_admin_tile.dart';
 
-class ArmyListPlaceholderTile extends StatelessWidget {
-  const ArmyListPlaceholderTile({
+class GamerListTile extends StatelessWidget {
+  const GamerListTile({
     required this.isExpanded,
     required this.onToggle,
+    required this.gamers,
     super.key,
   });
 
-  
   final bool isExpanded;
   final VoidCallback onToggle;
+  final List<Gamer> gamers;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +24,6 @@ class ArmyListPlaceholderTile extends StatelessWidget {
     } else {
       theIcon = Icon(Icons.expand_more);
     }
-
-    List<Widget> bookingsList = [];
 
     return Padding(
       padding: EdgeInsets.all(8.0),
@@ -41,7 +41,7 @@ class ArmyListPlaceholderTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Coming soon....?',
+                          'Subscriber Administration',
                           style: TextStyle(
                             color: bwgDarkpurple,
                             fontWeight: FontWeight.bold,
@@ -57,7 +57,7 @@ class ArmyListPlaceholderTile extends StatelessWidget {
                   ),
                 ],
               ),
-              if (isExpanded) ...bookingsList,
+              if (isExpanded) PlayerAdminList(gamers: gamers),
             ],
           ),
         ),

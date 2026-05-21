@@ -11,7 +11,7 @@ import '../model/bwg_homepage_viewmodel.dart';
 import '../widgets/usericon.dart';
 import '../widgets/contentcard.dart';
 import '../widgets/mybookings.dart';
-import '../widgets/armylist_placeholder.dart';
+import '../widgets/gamer_list_tile.dart';
 
 class BWGHomePage extends StatefulWidget {
   const BWGHomePage({super.key, required this.title});
@@ -30,6 +30,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   List<Gamer> theGamersList = [];
   late LoggedInUser theLoggedInUser; 
   final Set<String> expandedDays = {};
+  bool _isAdminExpanded = true;
   final viewModel = BWGHomePageViewModel();
   int _selectedIndex = 0;
 
@@ -114,7 +115,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    const String armyListKey = 'army_list_placeholder';
     List<DayBookingTile> allDaysBookingsTileList = [];
     final user = viewModel.theLoggedInUser;
 
@@ -275,16 +275,15 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
             )
           : ListView(
               children: <Widget>[
-                ArmyListPlaceholderTile(
-                  isExpanded: expandedDays.contains(armyListKey),
+                GamerListTile(
+                  gamers: List.from(theGamersList)
+                    ..sort((a, b) => a.nickName.toLowerCase().compareTo(b.nickName.toLowerCase())),
+                  isExpanded: _isAdminExpanded,
                   onToggle: () {
                     setState(() {
-                      if (!expandedDays.add(armyListKey)) {
-                        expandedDays.remove(armyListKey);
-                      }
+                      _isAdminExpanded = !_isAdminExpanded;
                     });
                   },
-                  key: const ValueKey(armyListKey),
                 ),
               ],
             ),
@@ -292,23 +291,25 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         backgroundColor: Colors.black,
         child: BWGDrawerMenu()
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Bookings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Symbols.assignment),
-            label: 'Admin',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped, 
-        selectedItemColor: bwgLilac,
-        unselectedItemColor: bwgDarkpurple,
-        backgroundColor: Colors.black,
-  ),
+      bottomNavigationBar: (user != null && (user.userId == 1 || user.userId == 2))
+          ? BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month),
+                  label: 'Bookings',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Symbols.assignment),
+                  label: 'Admin',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              selectedItemColor: bwgLilac,
+              unselectedItemColor: bwgDarkpurple,
+              backgroundColor: Colors.black,
+            )
+          : null,
     );
   }
 }
