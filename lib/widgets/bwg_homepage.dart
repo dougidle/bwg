@@ -60,15 +60,14 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     try {
       // Fetch both Bookings and Gamers in parallel for better performance
       final results = await Future.wait([
-        viewModel.fetchBookings(),
         viewModel.fetchGameBookings(),
         viewModel.fetchGamers(),
         viewModel.fetchGamer(),
       ]);
 
       setState(() {
-        theGameBookingsList = results[1] as List<GameBooking>;
-        theGamersList = results[2] as List<Gamer>;
+        theGameBookingsList = results[0] as List<GameBooking>;
+        theGamersList = results[1] as List<Gamer>;
         _loadState = LoadStates.done;
       });
 

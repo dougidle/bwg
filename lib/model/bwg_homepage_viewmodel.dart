@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'table_booking.dart';
 import 'game_booking.dart';
 import '../utilities/load_states.dart';
 import 'dart:convert';
@@ -22,23 +21,6 @@ class BWGHomePageViewModel extends ChangeNotifier {
 
   void _onUserChanged() {
     notifyListeners();
-  }
-
-  Future<List<TableBooking>> fetchBookings() async {
-    final pastDate = DateTime.now().toUtc().subtract(const Duration(days: 1));
-    final url = Uri.parse(
-      'https://musterpointapp.com/api/getTableBookingsFromDate.php?date=$pastDate',
-    );
-
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final List<dynamic> decoded = jsonDecode(response.body);
-
-      return TableBookingParser.parseBookings(decoded);
-    } else {
-      throw Exception('Failed to load bookings: ${response.statusCode}');
-    }
   }
 
   Future<List<GameBooking>> fetchGameBookings() async {
