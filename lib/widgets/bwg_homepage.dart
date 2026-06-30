@@ -203,7 +203,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         );
     }
 
-    void _onItemTapped(int index) {
+    void onItemTapped(int index) {
       setState(() {
         _selectedIndex = index;
       });
@@ -283,6 +283,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
                       _isAdminExpanded = !_isAdminExpanded;
                     });
                   },
+                  onRefresh: _refreshAllData,
                 ),
               ],
             ),
@@ -303,7 +304,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
                 ),
               ],
               currentIndex: _selectedIndex,
-              onTap: _onItemTapped,
+              onTap: onItemTapped,
               selectedItemColor: bwgLilac,
               unselectedItemColor: bwgDarkpurple,
               backgroundColor: Colors.black,

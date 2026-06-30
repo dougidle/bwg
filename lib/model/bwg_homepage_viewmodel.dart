@@ -66,11 +66,11 @@ class BWGHomePageViewModel extends ChangeNotifier {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> gamerData = jsonDecode(response.body);
-      
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      final Map<String, dynamic> gamerData = responseBody['data'] as Map<String, dynamic>;
+
       final currentUser = theLoggedInUser;
       if (currentUser != null) {
-        // Update the local user object with fields from the Gamer API response
         currentUser.userNickName = gamerData['NickName'] ?? currentUser.userNickName;
         currentUser.isSubscriber = gamerData['isSubscriber'] == 1 || gamerData['isSubscriber'] == true;
 

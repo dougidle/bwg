@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import '../model/gamer.dart';
-import '../resources/bwg_colors.dart';
 
 class PlayerAdminList extends StatelessWidget {
   final List<Gamer> gamers;
@@ -28,11 +28,11 @@ class PlayerAdminTile extends StatefulWidget {
 
 class _PlayerAdminTileState extends State<PlayerAdminTile> {
   late bool _isSubscriber;
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the local state from the passed gamer object
     _isSubscriber = widget.gamer.isSubscriber;
   }
 
@@ -41,6 +41,39 @@ class _PlayerAdminTileState extends State<PlayerAdminTile> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.gamer.isSubscriber != widget.gamer.isSubscriber) {
       _isSubscriber = widget.gamer.isSubscriber;
+    }
+  }
+
+  Future<void> _updateSubscriberStatus(bool value) async {
+    setState(() {
+      _isSubscriber = value;
+      _isSaving = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://musterpointapp.com/api/updateSubscriberStatus.php'),
+        body: {
+          'UserId': widget.gamer.userId.toString(),
+          'isSubscriber': value ? '1' : '0',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        widget.gamer.isSubscriber = value;
+      } else {
+        throw Exception('Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Revert on failure
+      setState(() => _isSubscriber = !value);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update ${widget.gamer.nickName}: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
@@ -54,21 +87,20 @@ class _PlayerAdminTileState extends State<PlayerAdminTile> {
           children: <Widget>[
             Text(
               widget.gamer.nickName,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
-            Switch(
-              value: _isSubscriber,
-              onChanged: (bool value) {
-                setState(() {
-                  _isSubscriber = value;
-                  widget.gamer.isSubscriber = value;
-                });
-                // TODO: Add logic here to persist the change (e.g., API call or DB update)
-              },
-            ),
+            if (_isSaving)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              Switch(
+                value: _isSubscriber,
+                onChanged: _updateSubscriberStatus,
+              ),
           ],
         ),
       ),
