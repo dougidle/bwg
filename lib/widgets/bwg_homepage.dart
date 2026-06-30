@@ -291,7 +291,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         backgroundColor: Colors.black,
         child: BWGDrawerMenu()
       ),
-      bottomNavigationBar: (user != null && (user.userId == 0 || user.userId == 2))
+      bottomNavigationBar: (user != null && (user.userId == 1 || user.userId == 2))
           ? BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
