@@ -75,11 +75,11 @@ class MakeBookingViewModel extends ChangeNotifier {
     dateIterator = dateIterator.add(Duration(days: daysUntilThursday));
 
     if (isSubscriber) {
-      // Add all Thursdays until the end of the current month
       while (dateIterator.month == currentMonth) {
         theAvailableGameDays.add(dateIterator);
         dateIterator = dateIterator.add(const Duration(days: 7));
       }
+      theAvailableGameDays.add(dateIterator); // first Thursday of next month
     } else {
       // Return only the next Thursday but only if it is at least the Monday before (Mon-Thu)
       if (now.weekday <= DateTime.thursday) {
