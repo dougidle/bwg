@@ -271,6 +271,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                     ]
                   ),
                   //GoogleUserTile(user),
+                  Divider(),
                   Form(
                     key: _formKey,
                     child: Column(

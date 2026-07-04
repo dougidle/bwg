@@ -45,7 +45,7 @@ class _MyBookingsTile extends State<MyBookingsTile> {
       theIcon = Icon(Icons.expand_more);
     }
 
-    List<Widget> bookingsList = [];
+    List<Widget> bookingsList = [Divider()];
     for (var i = 0; i < widget.myBookings.length; i++) {
       final booking = widget.myBookings[i];
 

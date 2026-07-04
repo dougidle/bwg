@@ -212,6 +212,8 @@ class _MakeBookingState extends State<MakeBookingTile> {
       )
     );
 
+    theContentList.add(Divider());
+
     if (gameDays.isEmpty) {
       theContentList.add(
         Row(

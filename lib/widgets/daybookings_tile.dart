@@ -36,7 +36,7 @@ class DayBookingTile extends StatelessWidget {
       theIcon = Icon(Icons.expand_more);
     }
 
-    List<Widget> bookingsList = [];
+    List<Widget> bookingsList = [Divider()];
     int tablesUsed = 0;
 
     for (var i = 0; i < theBookings.length; i++) {
