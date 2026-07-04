@@ -212,6 +212,29 @@ class _MakeBookingState extends State<MakeBookingTile> {
       )
     );
 
+    if (gameDays.isEmpty) {
+      theContentList.add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.warning_rounded, color: bwgRed, size: 36),
+            ),
+            Expanded(
+              child: Text(
+                'Bookings will reopen for non-subscribers on Monday morning',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: bwgDarkpurple,
+                ),
+              ),
+            ),
+          ],
+        )
+      );
+    } else {
+
     // Player 1
     theContentList.add(
       Row(
@@ -614,6 +637,8 @@ class _MakeBookingState extends State<MakeBookingTile> {
         ],
       )
     );
+
+    }
 
     if (_isExpanded) {
       theWidgetList += theContentList;
