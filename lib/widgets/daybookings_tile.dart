@@ -36,7 +36,7 @@ class DayBookingTile extends StatelessWidget {
       theIcon = Icon(Icons.expand_more);
     }
 
-    List<Widget> bookingsList = [Divider()];
+    List<Widget> bookingsList = [];
     int tablesUsed = 0;
 
     for (var i = 0; i < theBookings.length; i++) {
@@ -136,7 +136,10 @@ class DayBookingTile extends StatelessWidget {
                   ),
                 ],
               ),
-              if (isExpanded) ...bookingsList,
+              if (isExpanded) ...[
+                const Divider(),
+                ...bookingsList,
+              ],
             ],
           ),
         ),

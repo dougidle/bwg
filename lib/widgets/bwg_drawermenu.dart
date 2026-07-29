@@ -5,7 +5,11 @@ import '../model/drawer_viewmodel.dart';
 import '../model/logged_in_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 import '../repositories/user_repository.dart';
 
 class BWGDrawerMenu extends StatefulWidget {
@@ -29,54 +33,78 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Widget googleSignInButton() {
-    return OutlinedButton(
-      onPressed: signInWithGoogle,
-      style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        side: const BorderSide(color: Colors.grey, width: 0.5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(2), // Google uses a very slight radius
+    return SizedBox(
+      width: double.infinity,
+      height: 44, // Match the height of SignInWithAppleButton
+      child: OutlinedButton(
+        onPressed: signInWithGoogle,
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black87,
+          side: const BorderSide(color: Colors.grey, width: 0.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8), // Match SignInWithAppleButton's default radius
+          ),
+          padding: EdgeInsets.zero, // We'll handle padding inside the Row
         ),
-        padding: EdgeInsets.zero, // We'll handle padding inside the Row
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // The Google Logo "G"
-          Padding(
-            padding: const EdgeInsets.all(1.0), // Creates the border effect
-            child: Container(
-              height: 38, // Button height minus padding
-              width: 38,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0), // Space around the G
-                child: Image.network(
-                  'https://pngimg.com/uploads/google/google_PNG19635.png',
-                  fit: BoxFit.contain,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // The Google Logo "G"
+            Padding(
+              padding: const EdgeInsets.all(1.0), // Creates the border effect
+              child: Container(
+                height: 30, // Button height minus padding
+                width: 30,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(0.0), // Space around the G
+                  child: Image.network(
+                    'https://pngimg.com/uploads/google/google_PNG19635.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          const Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Text(
-              'Sign in with Google',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Roboto', // Ensure you have Roboto in pubspec.yaml
+            const Padding(
+              padding: EdgeInsets.only(right: 16.0),
+              child: Text(
+                'Sign in with Google',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Roboto', // Ensure you have Roboto in pubspec.yaml
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  Widget appleSignInButton() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: SignInWithAppleButton(
+        onPressed: signInWithApple,
+        height: 44,
+      ),
+    );
+  }
+
+  String _generateNonce([int length = 32]) {
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
+  }
+
+  String _sha256ofString(String input) {
+    return sha256.convert(utf8.encode(input)).toString();
   }
 
   static Map<String, dynamic>? parseJwt(String? token) {
@@ -154,7 +182,65 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
     }
   }
 
-  void signOutWithGoogle() async {
+  Future<void> signInWithApple() async {
+    try {
+      final rawNonce = _generateNonce();
+      final nonce = _sha256ofString(rawNonce);
+
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+
+      final oauthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser == null) {
+        throw Exception('Firebase sign-in failed: User is null');
+      }
+
+      // Apple only returns givenName/familyName the first time a user authorizes
+      // the app, so fall back to whatever we already have stored for them.
+      final existingUser = viewModel.theLoggedInUser;
+      final String fName = appleCredential.givenName ?? existingUser?.userFirstName ?? '';
+      final String lName = appleCredential.familyName ?? existingUser?.userLastName ?? '';
+
+      _firstNameController.text = fName;
+      _lastNameController.text = lName;
+
+      final nick = fName.isNotEmpty ? "$fName ${lName.isNotEmpty ? lName[0] : ''}" : '';
+
+      final newUser = LoggedInUser(
+        userId: -1,
+        authId: firebaseUser.uid,
+        userFirstName: fName,
+        userLastName: lName,
+        userNickName: nick,
+        loginType: 'Apple',
+        isSubscriber: false
+      );
+      await UserRepository.instance.saveUser(newUser);
+
+      setState(() => user = firebaseUser);
+    } catch (e) {
+      debugPrint('Apple Sign-In Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sign-in failed. Error: $e')),
+        );
+      }
+    }
+  }
+
+  void signOut() async {
     await _googleSignIn.signOut();
     await FirebaseAuth.instance.signOut();
     setState(() => user = null);
@@ -238,7 +324,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                   Row(
                     children: <Widget>[
                       Text(
-                        'User Details',
+                        'Login',
                         style: TextStyle(
                           color: bwgDarkpurple,
                           fontWeight: FontWeight.bold,
@@ -248,6 +334,8 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                       Spacer(),
                     ]
                   ),
+                  Divider(),
+                  if (Platform.isIOS) appleSignInButton(),
                   googleSignInButton(),
                 ]
               )
@@ -430,7 +518,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                                         userFirstName: firstName,
                                         userLastName: lastName,
                                         userNickName: nickname,
-                                        loginType: 'Google',
+                                        loginType: viewModel.theLoggedInUser?.loginType ?? 'Google',
                                         isSubscriber: false,
                                       );
                                       await viewModel.addUser(updatedUser);
@@ -462,7 +550,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          signOutWithGoogle();
+                          signOut();
                           viewModel.deleteAllUsers();
                           Navigator.pop(context);
                         },

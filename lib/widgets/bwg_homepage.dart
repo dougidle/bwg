@@ -70,8 +70,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         theGamersList = results[1] as List<Gamer>;
         _loadState = LoadStates.done;
       });
-
-      debugPrint('Successfully loaded ${theGamersList.length} gamers and ${theGameBookingsList.length} bookings.');
     } catch (e) {
       debugPrint('Error refreshing data: $e');
       setState(() {
