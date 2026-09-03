@@ -7,7 +7,15 @@ import '../model/gamer.dart';
 class MyBookingsTile extends StatefulWidget {
   final List<GameBooking> myBookings;
   final List<Gamer> theGamersList;
-  const MyBookingsTile({super.key, required this.myBookings, required this.theGamersList});
+  final int currentUserId;
+  final ValueChanged<GameBooking> onDeleteBooking;
+  const MyBookingsTile({
+    super.key,
+    required this.myBookings,
+    required this.theGamersList,
+    required this.currentUserId,
+    required this.onDeleteBooking,
+  });
 
   @override
   State<MyBookingsTile> createState() => _MyBookingsTile();
@@ -67,6 +75,12 @@ class _MyBookingsTile extends State<MyBookingsTile> {
         p2Sub = p2Gamer?.isSubscriber ?? false;
       }
 
+      // Either player in the booking can cancel it. The delete endpoint is
+      // keyed by the booking's player1 id + date, so we always send
+      // booking.player1 regardless of which of the two is cancelling.
+      final bool canDelete = booking.player1 == widget.currentUserId ||
+          booking.player2 == widget.currentUserId;
+
       bookingsList.add(
         MyBookingTile(
           player1: p1Gamer?.nickName ?? 'Unknown',
@@ -76,6 +90,7 @@ class _MyBookingsTile extends State<MyBookingsTile> {
           isOrganised: booking.isOrganised,
           isPlayer1Subscriber: p1Gamer?.isSubscriber ?? false,
           isPlayer2Subscriber: p2Sub,
+          onDelete: canDelete ? () => widget.onDeleteBooking(booking) : null,
           key: ValueKey('${booking.player1}-${booking.player2}-$i'),
         )
       );

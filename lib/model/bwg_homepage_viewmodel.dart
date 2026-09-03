@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'game_booking.dart';
 import '../utilities/load_states.dart';
 import 'dart:convert';
@@ -102,6 +103,23 @@ class BWGHomePageViewModel extends ChangeNotifier {
     } else {
       throw Exception('Failed to load gamer: ${response.statusCode}');
     }
+  }
+
+  Future<bool> deleteBooking(GameBooking booking) async {
+    final url = Uri.parse(
+      'https://musterpointapp.com/api/deleteGameBooking.php',
+    );
+    final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(booking.bookingDate);
+
+    final response = await http.post(
+      url,
+      body: {
+        'player1': booking.player1.toString(),
+        'theDate': formattedDate,
+      },
+    );
+
+    return response.statusCode == 200;
   }
 
   Map<DateTime, List<GameBooking>> groupGameBookingsByDate(List<GameBooking> bookings) {

@@ -12,6 +12,9 @@ class DayBookingTile extends StatelessWidget {
     this.theGamers, {
     required this.isExpanded,
     required this.onToggle,
+    required this.currentUserId,
+    required this.isAdmin,
+    required this.onDeleteBooking,
     super.key,
   });
 
@@ -20,6 +23,9 @@ class DayBookingTile extends StatelessWidget {
   final List<Gamer> theGamers;
   final bool isExpanded;
   final VoidCallback onToggle;
+  final int currentUserId;
+  final bool isAdmin;
+  final ValueChanged<GameBooking> onDeleteBooking;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +67,13 @@ class DayBookingTile extends StatelessWidget {
         p2Sub = p2Gamer?.isSubscriber ?? false;
       }
 
+      // Either player in the booking, or an admin, can cancel it. The delete
+      // endpoint is keyed by the booking's player1 id + date, so we always
+      // send booking.player1 regardless of who is cancelling.
+      final bool canDelete = isAdmin ||
+          booking.player1 == currentUserId ||
+          booking.player2 == currentUserId;
+
       bookingsList.add(
         BookingTile(
           p1Gamer?.nickName ?? 'Unknown',
@@ -69,6 +82,7 @@ class DayBookingTile extends StatelessWidget {
           booking.isOrganised,
           isPlayer1Subscriber: p1Gamer?.isSubscriber ?? false,
           isPlayer2Subscriber: p2Sub,
+          onDelete: canDelete ? () => onDeleteBooking(booking) : null,
           key: ValueKey('${booking.player1}-${booking.player2}-$i'),
         )
       );

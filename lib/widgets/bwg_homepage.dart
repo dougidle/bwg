@@ -95,6 +95,49 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
     if (mounted) setState(() {});
   }
 
+  Future<void> _confirmDeleteBooking(GameBooking booking) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Barming Wargamers'),
+        content: const Text('Are you sure you want to cancel this booking?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Yes, cancel it'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final success = await viewModel.deleteBooking(booking);
+    if (!mounted) return;
+
+    if (success) {
+      await _refreshAllData();
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Barming Wargamers'),
+          content: const Text('Sorry, we could not cancel that booking. Please try again.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -114,8 +157,9 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     List<DayBookingTile> allDaysBookingsTileList = [];
     final user = viewModel.theLoggedInUser;
+    final bool isAdmin = user != null && (user.userId == 1 || user.userId == 2);
 
-    
+
     // Calculate user-specific bookings at the top of build to avoid syntax errors in the widget tree
     final userBookings = user != null
         ? theGameBookingsList.where((booking) =>
@@ -143,6 +187,9 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
               }
             });
           },
+          currentUserId: user?.userId ?? -1,
+          isAdmin: isAdmin,
+          onDeleteBooking: _confirmDeleteBooking,
           key: ValueKey(key),
         ),
       );
@@ -260,7 +307,9 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
                     if (userBookings.isNotEmpty)
                       MyBookingsTile(
                           myBookings: userBookings,
-                          theGamersList: theGamersList),
+                          theGamersList: theGamersList,
+                          currentUserId: user!.userId,
+                          onDeleteBooking: _confirmDeleteBooking),
                     MakeBookingTile(
                         theGamersList: theGamersList,
                         theUsersBookings: userBookings,
@@ -289,7 +338,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         backgroundColor: Colors.black,
         child: BWGDrawerMenu()
       ),
-      bottomNavigationBar: (user != null && (user.userId == 1 || user.userId == 2))
+      bottomNavigationBar: isAdmin
           ? BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
