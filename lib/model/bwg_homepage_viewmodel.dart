@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../repositories/user_repository.dart';
 import 'logged_in_user.dart';
 import '../model/gamer.dart';
+import '../utilities/app_review_user.dart';
 
 class BWGHomePageViewModel extends ChangeNotifier {
   String? errorMessage;
@@ -33,8 +34,15 @@ class BWGHomePageViewModel extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final List<dynamic> decoded = jsonDecode(response.body);
+      final bookings = GameBookingParser.parseBookings(decoded);
+      final viewerId = theLoggedInUser?.userId;
 
-      return GameBookingParser.parseBookings(decoded);
+      // Bookings involving the app review account are only visible to whoever
+      // is actually logged in as it - hidden from everyone else, table count included.
+      if (viewerId == appReviewUserId) return bookings;
+      return bookings
+          .where((b) => b.player1 != appReviewUserId && b.player2 != appReviewUserId)
+          .toList();
     } else {
       throw Exception('Failed to load bookings: ${response.statusCode}');
     }
@@ -49,7 +57,18 @@ class BWGHomePageViewModel extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
-      return GamerParser.parseGamers(decodedResponse);
+      final gamers = GamerParser.parseGamers(decodedResponse);
+      final viewerId = theLoggedInUser?.userId;
+
+      // The app review account is always a subscriber and only ever visible
+      // to whoever is actually logged in as it.
+      return gamers
+          .where((g) => g.userId != appReviewUserId || viewerId == appReviewUserId)
+          .map((g) {
+            if (g.userId == appReviewUserId) g.isSubscriber = true;
+            return g;
+          })
+          .toList();
     } else {
       throw Exception('Failed to load gamers: ${response.statusCode}');
     }
@@ -72,7 +91,10 @@ class BWGHomePageViewModel extends ChangeNotifier {
       final currentUser = theLoggedInUser;
       if (currentUser != null) {
         currentUser.userNickName = gamerData['NickName'] ?? currentUser.userNickName;
-        currentUser.isSubscriber = gamerData['isSubscriber'] == 1 || gamerData['isSubscriber'] == true;
+        // The app review account's subscriber status must never be reset by the server.
+        currentUser.isSubscriber = currentUser.userId == appReviewUserId ||
+            gamerData['isSubscriber'] == 1 ||
+            gamerData['isSubscriber'] == true;
 
         await deleteAllUsers();
         await addUser(currentUser);
