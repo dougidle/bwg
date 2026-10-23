@@ -33,7 +33,7 @@ class DayBookingTile extends StatelessWidget {
     String theFormattedDate = formatter.format(theDate);
     String theTableText = '';
     Color theTableColor = bwgDarkpurple;
-    const maxTables = 28;
+    const maxTables = 22;
 
     Icon theIcon;
     if (isExpanded) {
