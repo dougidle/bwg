@@ -1,6 +1,5 @@
 import 'package:bwg/resources/bwg_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'bwg_widgets.dart';
 import '../model/game_booking.dart';
@@ -34,22 +33,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   final viewModel = BWGHomePageViewModel();
   int _selectedIndex = 0;
 
-  PackageInfo _packageInfo = PackageInfo(
-    appName: 'Unknown',
-    packageName: 'Unknown',
-    version: 'Unknown',
-    buildNumber: 'Unknown',
-    buildSignature: 'Unknown',
-    installerStore: 'Unknown',
-  );
-
-  Future<void> _initPackageInfo() async {
-    final info = await PackageInfo.fromPlatform();
-    setState(() {
-      _packageInfo = info;
-    });
-  }
-  
   Future<void> _refreshAllData() async {
     if (_loadState == LoadStates.loading) return;
 
@@ -82,7 +65,6 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _initPackageInfo();
     _refreshAllData();
 
     viewModel.addListener(_onViewModelChange);
@@ -260,30 +242,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
         foregroundColor: bwgLilac,
         backgroundColor: Colors.black,
         title: Text(widget.title),
-        leading: IconButton(
-          onPressed: () {
-            // Show an alert dialog when the button is pressed
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Text('Barming Wargamers'),
-                content: Text('Version: ${_packageInfo.version}\nBuild: ${_packageInfo.buildNumber}'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
-            );
-          }, 
-          icon: Icon(Icons.info)
-        ),
-        actions: [
-          theRefreshIcon,
-          Builder(
+        leading: Builder(
           builder: (context) {
             return UserIconButton(
               onPressed: () {
@@ -292,6 +251,8 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
             );
           }
         ),
+        actions: [
+          theRefreshIcon,
         ],
       ),
       backgroundColor: Colors.black,
@@ -301,7 +262,7 @@ class _BWGHomePageState extends State<BWGHomePage> with TickerProviderStateMixin
                 children: <Widget>[
                   if (viewModel.theLoggedInUser == null)
                     ContentCard(
-                      'Please login using the icon top right before you use the app.',
+                      'Please login using the icon top left before you use the app.',
                     )
                   else ...[
                     if (userBookings.isNotEmpty)
