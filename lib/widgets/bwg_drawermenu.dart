@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../resources/bwg_colors.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../model/drawer_viewmodel.dart';
 import '../model/logged_in_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +32,39 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
   final formatter = DateFormat('d MMMM yyyy');
   User? user;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  PackageInfo? _packageInfo;
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) setState(() => _packageInfo = info);
+  }
+
+  Widget appVersionSection() {
+    final info = _packageInfo;
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        color: bwgLilac,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Icon(Icons.info_outline, color: bwgDarkpurple),
+              const SizedBox(width: 8.0),
+              Text(
+                info == null ? 'Version' : 'Version ${info.version} b${info.buildNumber}',
+                style: TextStyle(
+                  color: bwgDarkpurple,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget googleSignInButton() {
     return SizedBox(
@@ -278,6 +312,7 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
+    _initPackageInfo();
     
     final loggedInUser = viewModel.theLoggedInUser;
 
@@ -307,7 +342,10 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListView(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
         children: [
           ListTile(
             trailing: Icon(Icons.close),
@@ -574,7 +612,11 @@ class _BWGDrawerMenuState extends State<BWGDrawerMenu> {
           )
         )
       ]
-    )
+    ),
+          ),
+          SafeArea(top: false, child: appVersionSection()),
+        ],
+      ),
     );
   }
 
