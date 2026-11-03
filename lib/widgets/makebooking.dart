@@ -343,8 +343,11 @@ class _MakeBookingState extends State<MakeBookingTile> {
                 ),
                 dropdownMenuEntries: _buildPlayer2DropdownEntries(),
                 onSelected: (value) {
+                  // Pressing Done on the keyboard without picking an entry
+                  // submits null - keep the typed text and current selection.
+                  if (value == null) return;
                   setState(() {
-                    theBooking.player2 = value!; // value is int now
+                    theBooking.player2 = value;
                     if (value != -1) { // If not "Other"
                       _player2Controller.clear();
                     }
