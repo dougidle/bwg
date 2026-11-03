@@ -370,6 +370,33 @@ class _MakeBookingState extends State<MakeBookingTile> {
       )
     );
 
+    // Warn when the typed name doesn't match any registered user
+    final String player2SearchText = _player2SearchController.text.trim();
+    if (theBooking.player2 == 0 &&
+        player2SearchText.isNotEmpty &&
+        _matchingGamers(player2SearchText).isEmpty) {
+      theContentList.add(
+        Row(
+          children: [
+            const Expanded(flex: 2, child: SizedBox.shrink()),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Text(
+                  "$player2SearchText isn't a registered user - please select Other instead",
+                  style: TextStyle(
+                    color: bwgRed,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     // Player 2
     if (theBooking.player2 == -1) { // Only show if "Other" is selected
       theContentList.add(
@@ -674,6 +701,13 @@ class _MakeBookingState extends State<MakeBookingTile> {
     );
   }
 
+  List<Gamer> _matchingGamers(String searchText) {
+    final String lower = searchText.toLowerCase();
+    return widget.theGamersList
+        .where((g) => g.userId != theBooking.player1 && g.nickName.toLowerCase().contains(lower))
+        .toList();
+  }
+
   List<DropdownMenuEntry<int>> _buildPlayer2DropdownEntries() {
     final String searchText = _player2SearchController.text.toLowerCase();
     if (searchText.isEmpty) {
@@ -682,9 +716,7 @@ class _MakeBookingState extends State<MakeBookingTile> {
 
     List<DropdownMenuEntry<int>> entries = [];
 
-    final filteredGamers = widget.theGamersList
-        .where((g) => g.userId != theBooking.player1 && g.nickName.toLowerCase().contains(searchText))
-        .toList()
+    final filteredGamers = _matchingGamers(searchText)
       ..sort((a, b) => a.nickName.toLowerCase().compareTo(b.nickName.toLowerCase()));
 
     for (var theOpponent in filteredGamers) {
